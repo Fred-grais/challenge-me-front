@@ -1,14 +1,38 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <Header/>
+    <div v-if="$auth.ready()">
+      <router-view/>
     </div>
-    <router-view/>
+    <div v-if="!$auth.ready()">
+      Loading ...
+    </div>
+    <Footer/>
   </div>
 </template>
 
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import Header from '@/components/layout/Header.vue';
+import Footer from '@/components/layout/Footer.vue';
+
+@Component({
+  components: {
+    Header,
+    Footer,
+  }
+})
+export default class App extends Vue {
+}
+
+</script>
+
 <style lang="scss">
+body {
+      background-color: #232323;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

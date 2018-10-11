@@ -1,0 +1,19 @@
+{
+  "name": "challenge-me",
+  "type": "static",
+  "public": true,
+  "static": {
+    "public": "dist",
+    "directoryListing": false,
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "alias": "challenge-me",
+  "files": [
+    "dist"
+  ]
+}
