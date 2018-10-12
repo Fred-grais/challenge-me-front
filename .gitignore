@@ -24,3 +24,5 @@ yarn-error.log*
 *.sw*
 
 /theme_files
+
+.circleci/run-build-locally.sh
