@@ -46,10 +46,14 @@ jobs:
           command: |
             sudo npm install --global --unsafe-perm now
 
+      - run:
+          name: Yarn Build
+          command: yarn build
+
       - deploy:
           name: Deploy & Alias
           command: |
-            yarn deploy
+            now --token $ZEIT_TOKEN --public && now --token $ZEIT_TOKEN alias
 
 workflows:
   version: 2
