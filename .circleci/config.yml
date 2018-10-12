@@ -30,3 +30,29 @@ jobs:
 
       # run tests!
       - run: yarn test:unit
+
+  deploy:
+    docker:
+      - image: circleci/node:8.11.3
+    steps:
+      - checkout
+
+      - run:
+        name: Install Now CLI
+        command: sudo npm install --global --unsafe-perm now
+
+      - deploy:
+        name: Deploy & alias
+        command: yarn deploy
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
