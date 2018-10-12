@@ -5,7 +5,7 @@
               <h1 class="mbr-section-title align-right mbr-bold pb-3 mbr-fonts-style display-1">
                   Challenge Me</h1>
               <h3 class="mbr-section-subtitle align-right mbr-light pb-3 mbr-fonts-style display-2">
-                  Confront your ideas</h3>
+                  Confront your ideas to better them</h3>
               <p class="mbr-text align-right pb-3 mbr-fonts-style display-5">
                  Challenge Me allows you to confront your ideas with other entrepeneurs to better them</p>
               <div class="mbr-section-btn align-right">
