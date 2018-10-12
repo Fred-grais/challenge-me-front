@@ -38,6 +38,10 @@ jobs:
       - checkout
 
       - run:
+          name: Yarn install
+          command: yarn install
+
+      - run:
           name: Install Now
           command: |
             sudo npm install --global --unsafe-perm now
