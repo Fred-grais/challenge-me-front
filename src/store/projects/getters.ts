@@ -8,4 +8,8 @@ export const getters: GetterTree<ProjectsState, RootState> = {
 
     return projects;
   },
+  isFetching(state) {
+      const { fetching } = state;
+      return fetching;
+  }
 };

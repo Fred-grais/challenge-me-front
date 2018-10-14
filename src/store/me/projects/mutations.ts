@@ -8,5 +8,8 @@ export const mutations: MutationTree<MeProjectsState> = {
   },
   addProject(state, project: ProjectPreview) {
     state.projects.push(project);
+  },
+  setFetching(state, isFetching: boolean) {
+    state.fetching = isFetching;
   }
 };

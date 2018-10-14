@@ -7,6 +7,7 @@ import { RootState } from '../types';
 
 export const state: MeState = {
     me: undefined,
+    fetching: false,
 };
 
 const namespaced: boolean = true;

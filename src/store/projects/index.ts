@@ -7,6 +7,7 @@ import { RootState } from '../types';
 
 export const state: ProjectsState = {
     projects: [],
+    fetching: false,
 };
 
 const namespaced: boolean = true;

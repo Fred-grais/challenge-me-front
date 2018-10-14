@@ -8,4 +8,5 @@ export interface ProjectPreview {
 
 export interface ProjectsState {
     projects: ProjectPreview[];
+    fetching: boolean;
 }

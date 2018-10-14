@@ -26,6 +26,9 @@ Vue.use(VueAuth, {
       url: 'me',
       method: 'GET',
       enabled: true,
+      beforeSend: () => {
+        console.log('before');
+      },
       success: () => {
         let user: any = {};
         const authUser = Vue.auth.user();
@@ -34,6 +37,7 @@ Vue.use(VueAuth, {
             user[_.camelCase(key)] = authUser[key];
         }
         store.commit('meState/setMe', user);
+        store.commit('meState/setFetching', false);
       },
     }
 });
