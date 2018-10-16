@@ -3,8 +3,10 @@ import Vuex from 'vuex';
 import { shallowMount, createLocalVue, RouterLinkStub  } from '@vue/test-utils';
 import ProjectsList from '@/components/projects/ProjectsList.vue';
 import PreviewCard from '@/components/project/PreviewCard.vue';
-import { ProjectPreview } from '@/store/projects/types';
+import { ProjectPreview, ProjectsState } from '@/store/projects/types';
 import { projectsState } from '@/store/projects/index';
+import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
+
 import sinon from 'sinon';
 
 const localVue = createLocalVue();
@@ -13,7 +15,7 @@ localVue.use(Vuex);
 describe('projects/ProjectsList.vue', () => {
 
   let actions: any;
-  let state: any;
+  let state: ProjectsState;
   let store: any;
 
   let fetchDataStub: any;
@@ -39,9 +41,12 @@ describe('projects/ProjectsList.vue', () => {
     },
   }];
 
+  const fetching = false;
+
   beforeEach(() => {
     state = {
       projects,
+      fetching
     };
 
     fetchDataStub = sinon.stub();
@@ -68,6 +73,21 @@ describe('projects/ProjectsList.vue', () => {
     });
 
     expect(actions.fetchData.called).to.be.true;
+  });
+
+  it('should display a loader when the data are fetching then hide it when data hasbeen loaded', () => {
+    const wrapper = shallowMount(ProjectsList, {
+      localVue,
+      store,
+    });
+
+    expect(wrapper.findAll(PulseLoader)).to.have.lengthOf(1);
+    state.fetching = true;
+
+    expect(wrapper.find(PulseLoader).props().loading).to.be.true;
+
+    state.fetching = false;
+    expect(wrapper.find(PulseLoader).props().loading).to.be.false;
   });
 
   it('should render the correct amount of PreviewCard components with correct props', () => {

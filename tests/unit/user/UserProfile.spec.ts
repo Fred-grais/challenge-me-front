@@ -4,7 +4,9 @@ import VueRouter from 'vue-router';
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import UserProfile from '@/components/user/UserProfile.vue';
 import { currentUserState } from '@/store/current-user/index';
-import { User } from '@/store/current-user/types';
+import { User, CurrentUserState } from '@/store/current-user/types';
+import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
+
 import sinon from 'sinon';
 
 const localVue = createLocalVue();
@@ -12,7 +14,7 @@ localVue.use(Vuex);
 
 describe('user/UserProfile.vue', () => {
   let actions: any;
-  let state: any;
+  let state: CurrentUserState;
   let store: any;
 
   let fetchDataStub: any;
@@ -25,9 +27,12 @@ describe('user/UserProfile.vue', () => {
     mobile: '0102030405',
   };
 
+  const fetching = false;
+
   beforeEach(() => {
     state = {
-      user,
+      currentUser: user,
+      fetching
     };
 
     fetchDataStub = sinon.stub();
@@ -61,6 +66,24 @@ describe('user/UserProfile.vue', () => {
     });
 
     expect(stub.called).to.be.true;
+  });
+
+  it('should display a loader when fetching the data and hide it when loaded', () => {
+    const $route = { path: '/', params: {id: 1} };
+
+    const wrapper = shallowMount(UserProfile, {
+      localVue,
+      store,
+      mocks: { $route },
+    });
+
+    expect(wrapper.findAll(PulseLoader)).to.have.lengthOf(1);
+
+    state.fetching = true;
+    expect(wrapper.find(PulseLoader).props().loading).to.be.true;
+
+    state.fetching = false;
+    expect(wrapper.find(PulseLoader).props().loading).to.be.false;
   });
 
   describe('#fetchUserDetails', () => {

@@ -3,8 +3,10 @@ import Vuex from 'vuex';
 import { shallowMount, createLocalVue, RouterLinkStub  } from '@vue/test-utils';
 import UsersList from '@/components/users/UsersList.vue';
 import PreviewCard from '@/components/user/PreviewCard.vue';
-import { UserPreview } from '@/store/users/types';
+import { UserPreview, UsersState } from '@/store/users/types';
 import {usersState } from '@/store/users/index';
+import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
+
 import sinon from 'sinon';
 
 const localVue = createLocalVue();
@@ -13,8 +15,9 @@ localVue.use(Vuex);
 describe('users/UsersList.vue', () => {
 
   let actions: any;
-  let state: any;
+  let state: UsersState;
   let store: any;
+  let getters: any;
 
   let fetchDataStub: any;
 
@@ -31,9 +34,12 @@ describe('users/UsersList.vue', () => {
     position: 'CEO',
   }];
 
+  const fetching = false;
+
   beforeEach(() => {
     state = {
       users,
+      fetching
     };
 
     fetchDataStub = sinon.stub();
@@ -41,13 +47,15 @@ describe('users/UsersList.vue', () => {
       fetchData: fetchDataStub,
     };
 
+    getters = usersState.getters;
+
     store = new Vuex.Store({
       modules: {
         usersState: {
           namespaced: true,
           state,
           actions,
-          getters: usersState.getters
+          getters
         }
       }
     });
@@ -60,6 +68,20 @@ describe('users/UsersList.vue', () => {
     });
 
     expect(actions.fetchData.called).to.be.true;
+  });
+
+  it('should render a loader when fetching data then hidding it when fetching has completed', () => {
+    const wrapper = shallowMount(UsersList, {
+      localVue,
+      store,
+    });
+    state.fetching = true;
+
+    expect(wrapper.findAll(PulseLoader)).to.have.lengthOf(1);
+    expect(wrapper.find(PulseLoader).props().loading).to.be.true;
+
+    state.fetching = false;
+    expect(wrapper.find(PulseLoader).props().loading).to.be.false;
   });
 
   it('should render the correct amount of PreviewCard components with correct props', () => {
@@ -105,4 +127,5 @@ describe('users/UsersList.vue', () => {
       done();
     });
   });
+
 });
