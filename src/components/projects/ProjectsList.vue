@@ -1,24 +1,24 @@
 <template>
   <div class="projects-list">
-      <div class="errors">
-        <div class="error" v-for="error in errors" :key="error">
-            {{ error }}
-        </div>
-      </div>
+
 
     <section class="features3 cid-r3ao134aCf" id="features3-z">
+      <pulse-loader :loading="isFetching"></pulse-loader>
 
-      <div class="container align-center">
-          <!-- <h2 class="pb-3 mbr-fonts-style mbr-section-title display-2">
-              OUR AWESOME TEAM
-          </h2> -->
-          <h3 class="pb-5 mbr-section-subtitle mbr-fonts-style mbr-light display-1">
-            Projects
-          </h3>
-          <div v-for="(chunk, index) in chunkedProjects" :key="index" class="media-container-row">
-              <PreviewCard v-for="projectPreview in chunk" :key="projectPreview.id" :projectPreview="projectPreview" />
+      <div class="container align-center" v-if="!isFetching">
+        <div class="errors">
+          <div class="error" v-for="error in errors" :key="error">
+              {{ error }}
           </div>
         </div>
+
+        <h3 class="pb-5 mbr-section-subtitle mbr-fonts-style mbr-light display-1">
+          Projects
+        </h3>
+        <div v-for="(chunk, index) in chunkedProjects" :key="index" class="media-container-row">
+            <PreviewCard v-for="projectPreview in chunk" :key="projectPreview.id" :projectPreview="projectPreview" />
+        </div>
+      </div>
     </section>
 
   </div>
@@ -29,6 +29,8 @@
   import { State, Action, Getter } from 'vuex-class';
 
   import { ProjectPreview } from '@/store/projects/types';
+  import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
+
   import PreviewCard from '@/components/project/PreviewCard.vue';
 
   import * as _ from 'lodash';
@@ -38,6 +40,7 @@
   @Component({
     components: {
       PreviewCard,
+      PulseLoader
     }
   })
   export default class ProjectsList extends Vue {
@@ -45,6 +48,7 @@
     errors: string[] = [];
 
     @Getter('getProjects', { namespace: projectsNamespace }) projectsPreviews!: ProjectPreview[];
+    @Getter('isFetching', { namespace: projectsNamespace }) isFetching!: boolean;
   	@Action('fetchData', { namespace: projectsNamespace }) fetchData!: () => Promise<any>;
 
     created() {

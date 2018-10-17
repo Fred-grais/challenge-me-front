@@ -14,4 +14,8 @@ export const getters: GetterTree<UsersState, RootState> = {
 
     return _.chunk(users, 4);
   },
+  isFetching(state) {
+      const { fetching } = state;
+      return fetching;
+  }
 };

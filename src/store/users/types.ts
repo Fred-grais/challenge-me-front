@@ -7,4 +7,5 @@ export interface UserPreview {
 
 export interface UsersState {
     users: UserPreview[];
+    fetching: boolean;
 }

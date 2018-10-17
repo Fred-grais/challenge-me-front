@@ -12,15 +12,17 @@
   </section>
   <br/>
   <br/>
+
   <Form/>
 
   <section class="features3 cid-r3ao134aCf" id="features3-z">
+    <pulse-loader :loading="isFetching"></pulse-loader>
 
-      <div class="container">
-          <div v-for="(chunk, index) in projectsPreviews" :key="index" class="media-container-row">
-              <PreviewCard v-for="projectPreview in chunk" :key="projectPreview.id" :projectPreview="projectPreview" />
-          </div>
-      </div>
+    <div class="container" v-if="!isFetching">
+        <div v-for="(chunk, index) in projectsPreviews" :key="index" class="media-container-row">
+            <PreviewCard v-for="projectPreview in chunk" :key="projectPreview.id" :projectPreview="projectPreview" />
+        </div>
+    </div>
   </section>
 </div>
 
@@ -34,6 +36,7 @@ import { State, Action, Getter } from 'vuex-class';
 import { ProjectPreview } from '@/store/projects/types';
 import PreviewCard from '@/components/me/project/PreviewCard.vue';
 import Form from '@/components/project/NewForm.vue';
+import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
 
 import * as _ from 'lodash';
 
@@ -43,11 +46,13 @@ const meProjectsNamespace: string = 'meProjectsState';
   components: {
     PreviewCard,
     Form,
+    PulseLoader
   }
 })
 export default class MyProjectsList extends Vue {
 
   @Getter('getChunkedProjects', { namespace: meProjectsNamespace }) projectsPreviews!: ProjectPreview[][];
+  @Getter('isFetching', { namespace: meProjectsNamespace }) isFetching!: boolean;
 
   @Action('fetchData', { namespace: meProjectsNamespace }) fetchData!: () => Promise<any>;
 

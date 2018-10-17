@@ -9,12 +9,12 @@ export const actions: ActionTree<MeProjectsState, RootState> = {
 
   fetchData({ commit }): Promise<any> {
     const apiInterface = new ApiInterface();
+    commit('setFetching', true);
 
     return apiInterface.listMyProjects()
       .then( (response) => {
-        console.log(response);
         commit('setProjects', response.data);
-
+        commit('setFetching', false);
         return response;
       });
   },

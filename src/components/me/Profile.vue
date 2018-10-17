@@ -1,14 +1,17 @@
 <template>
   <div class="profile">
-    <div class="errors">
-      <div class="error" v-for="error in errors" :key="error">
-          {{ error }}
-      </div>
-    </div>
 
-    <section class="cid-r3ansR389K mbr-fullscreen" id="header15-u">
+    <section class="cid-r3ansR389K mbr-fullscreen" id="header15-u" >
+        <pulse-loader :loading="isFetching"></pulse-loader>
 
-        <div class="container align-right">
+        <div class="container align-right" v-if="!isFetching">
+          <div class="errors">
+            <div class="error" v-for="error in errors" :key="error">
+                {{ error }}
+            </div>
+          </div>
+
+
           <div class="row">
             <div class="mbr-white col-lg-4 col-md-3 content-container"></div>
             <div class="col-lg-4 col-md-5">
@@ -57,14 +60,20 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 
 import { Me } from '@/store/me/types';
+import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
 
 const meNamespace: string = 'meState';
 
-@Component
+@Component({
+  components: {
+    PulseLoader,
+  }
+})
 export default class Profile extends Vue {
   errors: string[] = [];
 
   @Getter('getMe', { namespace: meNamespace }) me!: Me;
+  @Getter('isFetching', { namespace: meNamespace }) isFetching!: boolean;
 
   @Action('updateMe', { namespace: meNamespace }) updateMe!: (me: Me) => Promise<any>;
 

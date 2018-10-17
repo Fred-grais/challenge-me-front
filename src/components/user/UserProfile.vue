@@ -1,14 +1,17 @@
 <template>
   <div class="user-profile">
-    Fetching: {{ fetchingUser }}
 
-    <div class="errors">
-      <div class="error" v-for="error in errors" :key="error">
-        {{ error }}
+    <pulse-loader :loading="isFetching"></pulse-loader>
+
+    <div>
+      <div class="errors">
+        <div class="error" v-for="error in errors" :key="error">
+          {{ error }}
+        </div>
       </div>
     </div>
 
-  <div v-if="currentUser">
+    <div v-if="currentUser">
       <section class="mbr-section content5 cid-r2OL62NLQI mbr-parallax-background" id="content5-n">
         <div class="container">
             <div class="media-container-row">
@@ -108,16 +111,20 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 
 import { User } from '@/store/current-user/types';
-
+import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
 const currentUserNamespace: string = 'currentUserState';
 
-@Component
+@Component({
+  components: {
+    PulseLoader,
+  }
+})
 export default class UserProfile extends Vue {
 
   errors: string[] = [];
 
   @Getter('getCurrentUser', { namespace: currentUserNamespace }) currentUser!: User;
-  @Getter('getFetchingState', { namespace: currentUserNamespace }) fetchingUser!: boolean;
+  @Getter('getFetchingState', { namespace: currentUserNamespace }) isFetching!: boolean;
 
   @Action('fetchData', { namespace: currentUserNamespace }) fetchData!: (userId: number) => Promise<any>;
 

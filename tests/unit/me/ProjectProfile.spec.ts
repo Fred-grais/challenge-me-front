@@ -6,6 +6,9 @@ import ProjectProfile from '@/components/me/ProjectProfile.vue';
 import Form from '@/components/project/EditForm.vue';
 import { meProjectState } from '@/store/me/project/index';
 import { Project } from '@/store/current-project/types';
+import { MeProjectState } from '@/store/me/project/types';
+import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
+
 import sinon from 'sinon';
 
 const localVue = createLocalVue();
@@ -13,7 +16,7 @@ localVue.use(Vuex);
 
 describe('Me/ProjectProfile.vue', () => {
   let actions: any;
-  let state: any;
+  let state: MeProjectState;
   let store: any;
 
   const project: Project = {
@@ -29,9 +32,12 @@ describe('Me/ProjectProfile.vue', () => {
     },
   };
 
+  const fetching = false;
+
   beforeEach(() => {
     state = {
       project,
+      fetching
     };
 
     actions = {
@@ -74,6 +80,24 @@ describe('Me/ProjectProfile.vue', () => {
     });
 
     expect(stub.called).to.be.true;
+  });
+
+  it('should display a loader when fetching the data and hide it when loaded', () => {
+    const $route = { path: '/', params: {id: 1} };
+
+    const wrapper = shallowMount(ProjectProfile, {
+      localVue,
+      store,
+      mocks: { $route },
+    });
+
+    expect(wrapper.findAll(PulseLoader)).to.have.lengthOf(1);
+
+    state.fetching = true;
+    expect(wrapper.find(PulseLoader).props().loading).to.be.true;
+
+    state.fetching = false;
+    expect(wrapper.find(PulseLoader).props().loading).to.be.false;
   });
 
   describe('#fetchProjectDetails', () => {
