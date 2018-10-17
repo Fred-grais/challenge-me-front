@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <Header/>
-    <div v-if="$auth.ready()">
+    <div v-if="authReady">
       <router-view/>
     </div>
-    <div v-if="!$auth.ready()" class="global-loader-container">
+    <div v-if="!authReady" class="global-loader-container">
       <div class="global-loader-inner-container">
         <div class="inline-wrapper">
           <grid-loader :color="color" :size="size"></grid-loader>
@@ -34,6 +34,10 @@ import GridLoader from 'vue-spinner/src/GridLoader.vue'
 export default class App extends Vue {
   color = '#fff';
   size = '25px';
+
+  get authReady(): boolean {
+    return this.$auth.ready();
+  }
 }
 
 </script>
