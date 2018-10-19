@@ -9,6 +9,7 @@
       </div>
     </div>
 
+
     <div class="details" v-if="currentProject">
 
       <section class="header3 cid-r3anIOoz7O mbr-parallax-background" id="header3-v">
@@ -44,6 +45,14 @@
                   </div>
               </div>
           </div>
+      </section>
+
+      <section class="mbr-section article content11 cid-r3anUdQS9i" id="content11-w">
+        <timeline :items="timelineItems"></timeline>
+      </section>
+
+      <section class="mbr-section article content11 cid-r3anUdQS9i" id="content11-w">
+        <timeline :items="timelineItems"></timeline>
       </section>
 
       <section class="mbr-section article content11 cid-r3anUdQS9i" id="content11-w">
@@ -86,17 +95,30 @@ import { State, Action, Getter } from 'vuex-class';
 
 import { Project } from '@/store/current-project/types';
 import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
+import Timeline from '@/components/widgets/Timeline.vue';
 
 const currentProjectNamespace: string = 'currentProjectState';
+
+interface TimelineItem {
+  title: string;
+  date: Date;
+  description: string;
+  fadeInLeft?: boolean;
+  containImage?: boolean;
+  imageUrl?: string;
+}
 
 @Component({
   components: {
     PulseLoader,
+    Timeline
   }
 })
 export default class ProjectProfile extends Vue {
 
   errors: string[] = [];
+  timelineItems: TimelineItem[] = []
+
 
   @Getter('getCurrentProject', { namespace: currentProjectNamespace }) currentProject!: Project;
   @Getter('getFetchingState', { namespace: currentProjectNamespace }) isFetching!: boolean;
@@ -105,6 +127,39 @@ export default class ProjectProfile extends Vue {
 
   created() {
     this.fetchProjectDetails();
+
+    this.timelineItems = [
+      {
+        title: 'Title1',
+        date: new Date,
+        description: 'Description 1'
+      },
+      {
+        title: 'Title2',
+        date: new Date,
+        description: 'Description 2'
+      },
+      {
+        title: 'Title3',
+        date: new Date,
+        description: 'Description 3'
+      },
+      {
+        title: 'Title4',
+        date: new Date,
+        description: 'Description 4'
+      },
+      {
+        title: 'Title5',
+        date: new Date,
+        description: 'Description 5'
+      },
+      {
+        title: 'Title6',
+        date: new Date,
+        description: 'Description 6'
+      }
+    ]
   }
 
  fetchProjectDetails() {

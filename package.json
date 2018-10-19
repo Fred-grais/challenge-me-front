@@ -13,6 +13,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.116",
     "@types/nock": "^9.3.0",
+    "@types/scrollreveal": "^0.0.4",
     "@types/sinon": "^5.0.2",
     "@types/webrtc": "^0.0.23",
     "@websanova/vue-auth": "^2.21.14-beta",
@@ -21,6 +22,7 @@
     "nock": "^9.6.1",
     "now": "^11.4.6",
     "peerjs": "^0.3.16",
+    "scrollreveal": "^4.0.4",
     "sinon": "^6.3.4",
     "vue": "^2.5.17",
     "vue-axios": "^2.1.3",
