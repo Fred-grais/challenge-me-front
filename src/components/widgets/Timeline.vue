@@ -2,129 +2,26 @@
   <div class="timeline-container" v-if="displayTImeline()">
     <header>
       <div class="container text-center">
-        <h1>Vertical Timeline</h1>
-        <p>Sava Lazic</p>
+        <h1>Timeline</h1>
+        <p>Project life</p>
       </div>
     </header>
 
     <section class="timeline">
       <div class="container">
-        <Item v-for="(item, index) in items" :key="index" :fadeInLeft="index % 2 == 0" :title="item.title" :date="item.date" :description="item.description"></Item>
-
-        <!-- <div class="timeline-item">
-          <div class="timeline-img"></div>
-
-          <div class="timeline-content js--fadeInLeft">
-            <h2>Title</h2>
-            <div class="date">1 MAY 2016</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ipsa ratione omnis alias cupiditate saepe atque totam aperiam sed nulla voluptatem recusandae dolor, nostrum excepturi amet in dolores. Alias, ullam.</p>
-            <a class="bnt-more" href="javascript:void(0)">More</a>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-
-          <div class="timeline-img"></div>
-
-          <div class="timeline-content timeline-card js--fadeInRight">
-            <div class="timeline-img-header">
-              <h2>Card Title</h2>
-            </div>
-            <div class="date">25 MAY 2016</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ipsa ratione omnis alias cupiditate saepe atque totam aperiam sed nulla voluptatem recusandae dolor, nostrum excepturi amet in dolores. Alias, ullam.</p>
-            <a class="bnt-more" href="javascript:void(0)">More</a>
-          </div>
-
-        </div>
-
-        <div class="timeline-item">
-
-          <div class="timeline-img"></div>
-
-          <div class="timeline-content js--fadeInLeft">
-            <div class="date">3 JUN 2016</div>
-            <h2>Quote</h2>
-            <blockquote>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta explicabo debitis omnis dolor iste fugit totam quasi inventore!</blockquote>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-
-          <div class="timeline-img"></div>
-
-          <div class="timeline-content js--fadeInRight">
-            <h2>Title</h2>
-            <div class="date">22 JUN 2016</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ipsa ratione omnis alias cupiditate saepe atque totam aperiam sed nulla voluptatem recusandae dolor, nostrum excepturi amet in dolores. Alias, ullam.</p>
-            <a class="bnt-more" href="javascript:void(0)">More</a>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-
-          <div class="timeline-img"></div>
-
-          <div class="timeline-content timeline-card js--fadeInLeft">
-            <div class="timeline-img-header">
-              <h2>Card Title</h2>
-            </div>
-            <div class="date">10 JULY 2016</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ipsa ratione omnis alias cupiditate saepe atque totam aperiam sed nulla voluptatem recusandae dolor, nostrum excepturi amet in dolores. Alias, ullam.</p>
-            <a class="bnt-more" href="javascript:void(0)">More</a>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-
-          <div class="timeline-img"></div>
-
-          <div class="timeline-content timeline-card js--fadeInRight">
-            <div class="timeline-img-header">
-              <h2>Card Title</h2>
-            </div>
-            <div class="date">30 JULY 2016</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ipsa ratione omnis alias cupiditate saepe atque totam aperiam sed nulla voluptatem recusandae dolor, nostrum excepturi amet in dolores. Alias, ullam.</p>
-            <a class="bnt-more" href="javascript:void(0)">More</a>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-
-          <div class="timeline-img"></div>
-
-          <div class="timeline-content js--fadeInLeft">
-            <div class="date">5 AUG 2016</div>
-            <h2>Quote</h2>
-            <blockquote>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta explicabo debitis omnis dolor iste fugit totam quasi inventore!</blockquote>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-
-          <div class="timeline-img"></div>
-
-          <div class="timeline-content timeline-card js--fadeInRight">
-            <div class="timeline-img-header">
-              <h2>Card Title</h2>
-            </div>
-            <div class="date">19 AUG 2016</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ipsa ratione omnis alias cupiditate saepe atque totam aperiam sed nulla voluptatem recusandae dolor, nostrum excepturi amet in dolores. Alias, ullam.</p>
-            <a class="bnt-more" href="javascript:void(0)">More</a>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-
-          <div class="timeline-img"></div>
-
-          <div class="timeline-content js--fadeInLeft">
-            <div class="date">1 SEP 2016</div>
-            <h2>Title</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ipsa ratione omnis alias cupiditate saepe atque totam aperiam sed nulla voluptatem recusandae dolor, nostrum excepturi amet in dolores. Alias, ullam.</p>
-            <a class="bnt-more" href="javascript:void(0)">More</a>
-          </div>
-        </div>
-      </div> -->
+        <item v-for="(item, index) in timeline.items"
+          :key="item.title + item.date.format()"
+          ref="items"
+          :imageUrl="item.imageUrl"
+          :fadeInLeft="index % 2 == 0"
+          :title="item.title"
+          :date="item.date"
+          :description="item.description"
+          :editMode="editMode"
+          :itemIndex="index"
+          v-on:updated-item="gatherItems"
+          v-on:deleted-item="deleteItem">
+        </item>
     </div>
     </section>
   </div>
@@ -132,18 +29,14 @@
 
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 import ScrollReveal from 'scrollreveal'
 import Item from '@/components/widgets/timeline/Item.vue';
+import {ITimeline, ITimelineItem} from '@/store/common/types';
 
-interface TimelineItem {
-  title: string;
-  date: Date;
-  description: string;
-  fadeInLeft?: boolean;
-  containImage?: boolean;
-  imageUrl?: string;
-}
+import globalEventBus from '@/services/global-event-bus';
+
+import * as _ from 'lodash';
 
 @Component({
   components: {
@@ -151,28 +44,56 @@ interface TimelineItem {
   }
 })
 export default class Timeline extends Vue {
-  @Prop({type: Array, default: () => []}) items!: TimelineItem[];
+  @Prop({type: Object, default: () => { return {items: []}; }}) timeline!: ITimeline;
+  @Prop({type: Boolean, default: false}) editMode!: Boolean;
+
+  scrollViewInitialized = false;
 
   mounted() {
-    const sr = ScrollReveal();
-    sr.reveal('.js--fadeInLeft', {
-	    origin: 'left',
-	    distance: '300px',
-		  easing: 'ease-in-out',
-	    duration: 800,
-	  });
+    globalEventBus.$on('timeline-tab-activated', this.initScrollReveal);
+  }
 
-	  sr.reveal('.js--fadeInRight', {
-	    origin: 'right',
-	    distance: '300px',
-	    easing: 'ease-in-out',
-	    duration: 800,
-	  });
+  initScrollReveal() {
+    if (!this.scrollViewInitialized) {
+      const sr = ScrollReveal();
+      sr.reveal('.js--fadeInLeft', {
+        origin: 'left',
+        distance: '300px',
+        easing: 'ease-in-out',
+        duration: 800,
+      });
+
+      sr.reveal('.js--fadeInRight', {
+        origin: 'right',
+        distance: '300px',
+        easing: 'ease-in-out',
+        duration: 800,
+      });
+
+      this.scrollViewInitialized = true;
+    }
   }
 
   displayTImeline() {
-    return this.items.length > 0;
+    return this.timeline.items.length > 0;
   }
+
+  getUpdatedItems() {
+    _.each(this.$refs.items, (component) => {
+      (component as Item).emitUpdatedItem();
+    });
+  }
+
+  gatherItems(item: ITimelineItem) {
+    this.updatedItem(item);
+  }
+
+  deleteItem(itemIndex: number) {
+    this.timeline.items.splice(itemIndex, 1);
+  }
+
+  @Emit()
+  updatedItem(returnedTimelineItem: ITimelineItem) {}
 
 }
 </script>
@@ -333,51 +254,6 @@ export default class Timeline extends Vue {
 
     	a {
     		margin-left: 20px;
-    	}
-    }
-
-    .timeline-item {
-
-    	&:nth-child(2) {
-    		.timeline-img-header {
-    			background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0, .4)), url('https://hd.unsplash.com/photo-1458530970867-aaa3700e966d') center center no-repeat;
-    			background-size: cover;
-    		}
-    	}
-
-    	&:nth-child(5) {
-    		.timeline-img-header {
-    			background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0, .4)), url('https://hd.unsplash.com/photo-1444093826349-9ce8c622f4f3') center center no-repeat;
-    			background-size: cover;
-    		}
-    	}
-
-    	&:nth-child(6) {
-    		.timeline-img-header {
-    			background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0, .4)), url('https://hd.unsplash.com/photo-1471479917193-f00955256257') center center no-repeat;
-    			background-size: cover;
-    		}
-    	}
-
-    	&:nth-child(8) {
-    		.timeline-img-header {
-    			background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0, .4)), url('https://hd.unsplash.com/photo-1466840787022-48e0ec048c8a') center center no-repeat;
-    			background-size: cover;
-    		}
-    	}
-
-    	&:nth-child(10) {
-    		.timeline-img-header {
-    			background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0, .4)), url('https://hd.unsplash.com/photo-1447639703758-f525f36456bf') center center no-repeat;
-    			background-size: cover;
-    		}
-    	}
-
-    	&:nth-child(11) {
-    		.timeline-img-header {
-    			background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0, .4)), url('https://hd.unsplash.com/photo-1469429978400-082eec725ad5') center center no-repeat;
-    			background-size: cover;
-    		}
     	}
     }
 

@@ -6,11 +6,13 @@ import ProjectProfile from '@/components/project/ProjectProfile.vue';
 import { currentProjectState } from '@/store/current-project/index';
 import { Project, CurrentProjectState } from '@/store/current-project/types';
 import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
+import TimelineViewer from '@/components/widgets/TimelineViewer.vue';
 
-import sinon from 'sinon';
+import sinon, { SinonStub } from 'sinon';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+
 
 describe('project/ProjectProfile.vue', () => {
 
@@ -24,6 +26,7 @@ describe('project/ProjectProfile.vue', () => {
     id: 1,
     name: 'Name',
     description: 'Description',
+    timeline: {items: []},
     ownerFull: {
       id: 1,
       firstName: 'Fred',
@@ -59,10 +62,9 @@ describe('project/ProjectProfile.vue', () => {
   })
 
 
-  it('should call the fetchProjectDetails method on creation', () => {
+  function componentShallowFactory(stub: SinonStub) {
     const $route = { path: '/', params: {id: 1} };
-    const stub = sinon.stub();
-    const wrapper = shallowMount(ProjectProfile, {
+    return shallowMount(ProjectProfile, {
       localVue,
       store,
       methods: {
@@ -70,6 +72,12 @@ describe('project/ProjectProfile.vue', () => {
       },
       mocks: { $route }
     });
+  }
+
+
+  it('should call the fetchProjectDetails method on creation', () => {
+    const stub = sinon.stub();
+    const wrapper = componentShallowFactory(stub);
 
     expect(stub.called).to.be.true;
   });
@@ -90,6 +98,14 @@ describe('project/ProjectProfile.vue', () => {
 
     state.fetching = false;
     expect(wrapper.find(PulseLoader).props().loading).to.be.false;
+  });
+
+  it('should have a timeline viewer present on the page', () => {
+    const stub = sinon.stub();
+    const wrapper = componentShallowFactory(stub);
+
+    expect(wrapper.findAll(TimelineViewer)).to.have.lengthOf(1);
+    expect(wrapper.find(TimelineViewer).props().timeline).to.deep.equal(project.timeline);
   });
 
   describe('#fetchProjectDetails', () => {

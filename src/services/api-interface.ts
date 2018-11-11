@@ -44,7 +44,7 @@ class ApiInterface {
       return Vue.axios.post(this.generateEndpoint('createProject'), params);
     }
 
-    updateProject(params: Project): Promise<any> {
+    updateProject(params: Partial<Project>): Promise<any> {
       return Vue.axios.put(this.generateEndpoint('updateProject') + '/' + params.id, params);
     }
 

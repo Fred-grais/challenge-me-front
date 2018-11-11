@@ -23,6 +23,7 @@ describe('Me/ProjectProfile.vue', () => {
     id: 1,
     name: 'Name',
     description: 'Description',
+    timeline: {items: []},
     ownerFull: {
       id: 1,
       firstName: 'Fred',
@@ -91,7 +92,7 @@ describe('Me/ProjectProfile.vue', () => {
       mocks: { $route },
     });
 
-    expect(wrapper.findAll(PulseLoader)).to.have.lengthOf(1);
+    expect(wrapper.findAll(PulseLoader)).to.have.lengthOf(3);
 
     state.fetching = true;
     expect(wrapper.find(PulseLoader).props().loading).to.be.true;
