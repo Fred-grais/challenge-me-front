@@ -32,7 +32,7 @@ export const actions: ActionTree<MeProjectState, RootState> = {
         return response;
       });
   },
-  update({ commit }, project: Project): Promise<any> {
+  update({ commit }, project: Partial<Project>): Promise<any> {
     const apiInterface = new ApiInterface();
     commit('setFetching', true);
 

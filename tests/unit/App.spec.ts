@@ -4,9 +4,9 @@ import App from '@/App.vue';
 import sinon from 'sinon';
 import GridLoader from 'vue-spinner/src/GridLoader.vue'
 
-describe('login/Form.vue', () => {
+describe('App.vue', () => {
 
-  it.only('renders the loader when loading auth, then hide it', () => {
+  it('renders the loader when loading auth, then hide it', () => {
     let $auth: any =  {};
     const stub = sinon.stub();
     //fake.returns(false);
