@@ -43,46 +43,5 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
-html, body {
-  height: 100%;
-}
 
-body {
-      background-color: #232323;
-}
-
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  height: 100%;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-
-.global-loader-container {
-  text-align: center;
-  display: table;
-  height: 100%;
-  width: 100%;
-
-  .global-loader-inner-container {
-    display: table-cell;
-    vertical-align: middle;
-
-    .inline-wrapper {
-      display: inline-block;
-    }
-  }
-}
 </style>

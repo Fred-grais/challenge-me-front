@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 
 import VueAuth from '@websanova/vue-auth'
 import environment from './environments/environment';
+import BootstrapVue from 'bootstrap-vue'
 
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
@@ -41,6 +42,15 @@ Vue.use(VueAuth, {
       },
     }
 });
+
+// Vue Bootstrap
+Vue.use(BootstrapVue);
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+import '../public/assets/mobirise/css/mbr-additional.css';
+//////////////////
+
+import '@/assets/stylesheets/global/index.scss';
 
 new Vue({
   router,
