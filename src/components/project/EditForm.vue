@@ -50,6 +50,27 @@
 
                           <form class="mbr-form">
 
+                            <div>
+                              <b-badge href="#" variant="primary" :active='true'>Primary</b-badge>
+                              <b-badge href="#" variant="secondary">Secondary</b-badge>
+                              <b-badge href="#" variant="success">Success</b-badge>
+                              <b-badge href="#" variant="danger">Danger</b-badge>
+                              <b-badge href="#" variant="warning">Warning</b-badge>
+                              <b-badge href="#" variant="info">Info</b-badge>
+                              <b-badge href="#" variant="light">Light</b-badge>
+                              <b-badge href="#" variant="dark">Dark</b-badge>
+                            </div>
+
+                            <div>
+                                <vue-tags-input
+                                  ref='activitySectorsInput'
+                                  v-model="tag"
+                                  :tags="tagsForTagsInput"
+                                  :autocomplete-items="filteredItems"
+                                  @tags-changed="newTags => projectActivitySectorList(newTags)"
+                                />
+                              </div>
+
                               <div data-for="name">
                                   <div class="form-group">
                                       <input type="text" class="form-control px-3 name-input" v-model="project.name" placeholder="name" name="name" data-form-field="name" required="" id="name-header15-u">
@@ -88,13 +109,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 
 import { Project } from '@/store/current-project/types';
 import {ITimeline} from '@/store/common/types';
 import TimelineEditor from '@/components/widgets/TimelineEditor.vue';
 import TimelineViewer from '@/components/widgets/TimelineViewer.vue';
+import VueTagsInput from '@johmun/vue-tags-input';
+import ApiInterface from '@/services/api-interface.ts';
+import * as _ from 'lodash';
 
 import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
 
@@ -102,11 +126,13 @@ import globalEventBus from '@/services/global-event-bus';
 
 const meProjectNamespace: string = 'meProjectState';
 
+
 @Component({
   components: {
     TimelineEditor,
     TimelineViewer,
     PulseLoader,
+    VueTagsInput,
   }
 })
 export default class EditForm extends Vue {
@@ -114,10 +140,22 @@ export default class EditForm extends Vue {
   errors: string[] = [];
   result: string = '';
 
+  tag: string = '';
+  tags = [];
+  autocompleteItems = [{text: 'France'}];
+  apiInterface: ApiInterface = new ApiInterface();
+  debouncedSearchTags: () => any = function() {};
+
   @Getter('getProject', { namespace: meProjectNamespace }) project!: Project;
   @Getter('isFetching', { namespace: meProjectNamespace }) isFetching!: boolean;
 
   @Action('update', { namespace: meProjectNamespace }) updateProject!: (p: Partial<Project>) => Promise<any>;
+
+  created() {
+    this.debouncedSearchTags = _.debounce(() => {
+      this.searchTags();
+    }, 350);
+  }
 
   updateTimeline(updatedTimeline: ITimeline) {
     this.project.timeline = updatedTimeline;
@@ -154,8 +192,9 @@ export default class EditForm extends Vue {
     const description = this.project.description;
     const name = this.project.name;
     const id = this.project.id;
+    const activitySectorList = this.project.activitySectorList;
 
-    this.updateProject({id, name, description})
+    this.updateProject({id, name, description, activitySectorList})
       .then( (response: any) => {
         if (response.status == 200) {
           this.result = 'Updated!';
@@ -171,13 +210,44 @@ export default class EditForm extends Vue {
       });
   }
 
+  get tagsForTagsInput() {
+    return _.map(this.project.activitySectorList, (tag) => { return {text: tag }});
+  }
+
+  get filteredItems() {
+    return this.autocompleteItems.filter(i => new RegExp(this.tag, 'i').test(i.text));
+  }
+
+  projectActivitySectorList(tags: {text: string, tiClasses: string[]}[]) {
+    this.project.activitySectorList = _.map(tags, (tag) => { return tag.text });
+  }
+
   onTabActivation(tabIndex: number) {
     if (tabIndex === 1) {
       globalEventBus.$emit('timeline-tab-activated');
     }
   }
+
+  searchTags(): void {
+    this.apiInterface.searchTags(this.tag).then((response: any) => {
+      this.autocompleteItems = response.data.result;
+    })
+  }
+
+  @Watch('tag')
+  onTagChanged(val: string, oldVal: string) {
+    this.debouncedSearchTags();
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+  .badge {
+    opacity: 0.4;
+
+    &.active {
+      opacity: 1;
+    }
+
+  }
 </style>

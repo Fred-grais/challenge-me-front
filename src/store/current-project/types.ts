@@ -5,6 +5,8 @@ export interface Project {
   id: number;
   name: string;
   description: string;
+  activitySectorList: string [];
+  challengesNeededList: string[];
   timeline: ITimeline;
   ownerFull: User;
 }
