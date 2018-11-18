@@ -25,7 +25,7 @@ export const actions: ActionTree<MeProjectState, RootState> = {
 
     return apiInterface.createProject(project)
       .then( (response) => {
-        commit('setProject', response.data);
+        //commit('setProject', response.data);
         commit('meProjectsState/addProject', response.data, {root: true});
         commit('setFetching', false);
 

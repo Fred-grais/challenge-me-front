@@ -49,7 +49,6 @@
                       <div class="media-container-column" data-form-type="formoid">
 
                           <form class="mbr-form">
-
                             <div>
                               <b-badge href="#" variant="primary" :active='true'>Primary</b-badge>
                               <b-badge href="#" variant="secondary">Secondary</b-badge>
