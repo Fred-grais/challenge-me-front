@@ -79,6 +79,7 @@ export default class NewForm extends Vue {
         this.errors.push('Unexpected Error');
       }
     }).catch( (error: any) => {
+      console.error(error);
       if (error.response) {
         this.errors = error.response.data;
       } else {
