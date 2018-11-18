@@ -24,6 +24,8 @@ describe('Me/ProjectProfile.vue', () => {
     name: 'Name',
     description: 'Description',
     timeline: {items: []},
+    activitySectorList: [],
+    challengesNeededList: [],
     ownerFull: {
       id: 1,
       firstName: 'Fred',

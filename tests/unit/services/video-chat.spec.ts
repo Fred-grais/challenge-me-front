@@ -165,7 +165,7 @@ describe('services/video-chat.vue', () => {
         it('should create a call and return it', () => {
           const targetPeerId = 'targetPeerId';
           const callPeerStub = sinon.stub(Peer.prototype, 'call');
-          callPeerStub.returns('returnedCall');
+          callPeerStub.returns('returnedCall' as any);
 
           const stub = sinon.stub(VideoChatInterface.prototype, 'activateVideoChat');
           const videoChat = new VideoChatInterface();
@@ -195,7 +195,7 @@ describe('services/video-chat.vue', () => {
             };
 
             const callPeerStub = sinon.stub(Peer.prototype, 'call');
-            callPeerStub.returns('returnedCall');
+            callPeerStub.returns('returnedCall' as any);
 
             const stub = sinon.stub(VideoChatInterface.prototype, 'activateVideoChat');
             const videoChat = new VideoChatInterface();
