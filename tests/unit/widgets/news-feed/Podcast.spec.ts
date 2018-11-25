@@ -28,7 +28,7 @@ describe('widgets/news-feed/PodcastViewer.vue', () => {
         }}
       );
 
-      expect(wrapper.vm.formattedPublishingDate).to.equal('Monday, January 1, 2018 12:00 PM');
+      expect(wrapper.vm.formattedPublishingDate).to.equal(podcast.publishingDate.format('LLLL'));
     });
 
     it('should contain the podcast informations in the page', () => {
