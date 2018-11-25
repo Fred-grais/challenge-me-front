@@ -17,6 +17,7 @@ class ApiInterface {
       getAllProjects: '/projects',
       getProject: '/projects',
       searchTags: '/api/v1/tags',
+      getMainPodcast: '/podcasts'
     }
 
     constructor() {}
@@ -59,6 +60,10 @@ class ApiInterface {
 
     searchTags(search: string): Promise<any> {
       return Vue.axios.get(this.generateEndpoint('searchTags') + '?search=' + search);
+    }
+
+    getMainPodcast(): Promise<any> {
+      return Vue.axios.get(this.generateEndpoint('getMainPodcast'));
     }
 
     private generateEndpoint(key: string): string {
