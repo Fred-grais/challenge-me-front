@@ -48,11 +48,18 @@
                   </div>
               </div>
           </section>
+
+
         </b-tab>
+
         <b-tab title="Timeline">
           <section class="mbr-section article content11 cid-r3anUdQS9i" id="content11-w">
             <timeline-viewer :timeline="currentProject.timeline"></timeline-viewer>
           </section>
+        </b-tab>
+
+        <b-tab title="KPI">
+            <iframe src="https://app.klipfolio.com/published/5b90aeb65a6a3b1d478391435b1ab499/new-dashboard" width="100%" height="2000px"></iframe>
         </b-tab>
         <b-tab title="More">
           <section class="mbr-section article content11 cid-r3anUdQS9i" id="content11-w">
@@ -84,17 +91,11 @@
                       </div>
                   </div>
               </div>
+
+
           </section>
         </b-tab>
       </b-tabs>
-
-
-
-
-
-
-
-
     </div>
   </div>
 </template>
@@ -137,7 +138,7 @@ export default class ProjectProfile extends Vue {
       this.errors.push(error.message || 'An error occured, please try again later.');
     });
   }
-  
+
   onTabActivation(tabIndex: number) {
     if (tabIndex === 1) {
       globalEventBus.$emit('timeline-tab-activated');
