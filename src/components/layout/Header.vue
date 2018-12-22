@@ -39,6 +39,11 @@
                 </router-link>
               </li>
               <li class="nav-item">
+                <router-link class="nav-link link text-white display-4" to="/me/inbox">
+                  <span class="mbri-chat mbr-iconfont mbr-iconfont-btn"></span>
+                  Inbox
+                </router-link>
+              <li class="nav-item">
                 <a class="nav-link link text-white display-4" v-on:click="$auth.logout()">
                   <span class="mbri-search mbr-iconfont mbr-iconfont-btn"></span>
                   Logout
