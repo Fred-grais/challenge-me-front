@@ -55,6 +55,11 @@ export default new Router({
           path: 'project/:id',
           name: 'my_project',
           component: () => import(/* webpackChunkName: "about" */ './views/me/Project.vue'),
+        },
+        {
+          path: 'inbox',
+          name: 'inbox',
+          component: () => import(/* webpackChunkName: "about" */ './views/me/Inbox.vue'),
         }
       ]
     },
