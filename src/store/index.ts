@@ -9,6 +9,7 @@ import { meState } from './me/index';
 import { meProjectState } from './me/project/index';
 import { meProjectsState } from './me/projects/index';
 import { newsFeedState } from './news-feed';
+import { meInboxState } from './me/inbox/index';
 
 Vue.use(Vuex);
 
@@ -24,7 +25,8 @@ const store: StoreOptions<RootState> = {
         meState,
         meProjectState,
         meProjectsState,
-        newsFeedState
+        newsFeedState,
+        meInboxState,
     },
 };
 

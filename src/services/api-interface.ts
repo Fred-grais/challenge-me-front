@@ -17,7 +17,10 @@ class ApiInterface {
       getAllProjects: '/projects',
       getProject: '/projects',
       searchTags: '/api/v1/tags',
-      getMainPodcast: '/podcasts'
+      getMainPodcast: '/podcasts',
+      getConversationPreviews: '/api/v1/me/conversations',
+      getConversation: '/api/v1/me/conversations',
+      createMessage: '/api/v1/me/messages',
     }
 
     constructor() {}
@@ -64,6 +67,18 @@ class ApiInterface {
 
     getMainPodcast(): Promise<any> {
       return Vue.axios.get(this.generateEndpoint('getMainPodcast'));
+    }
+
+    getConversationPreviews(): Promise<any> {
+      return Vue.axios.get(this.generateEndpoint('getConversationPreviews'));
+    }
+
+    getConversation(conversationId: number): Promise<any> {
+      return Vue.axios.get(this.generateEndpoint('getConversation') + '/' + conversationId);
+    }
+
+    createMessage(conversationId: number, message: string): Promise<any> {
+      return Vue.axios.post(this.generateEndpoint('createMessage'), {message: {conversationId, message}})
     }
 
     private generateEndpoint(key: string): string {
