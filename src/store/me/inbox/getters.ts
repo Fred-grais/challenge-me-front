@@ -10,5 +10,5 @@ export const getters: GetterTree<MeInboxState, RootState> = {
   getCurrentConversation(state) {
     const { currentConversation } = state;
     return currentConversation;
-  }
+  },
 };

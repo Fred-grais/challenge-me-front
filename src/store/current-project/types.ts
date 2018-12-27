@@ -5,13 +5,13 @@ export interface Project {
   id: number;
   name: string;
   description: string;
-  activitySectorList: string [];
+  activitySectorList: string[];
   challengesNeededList: string[];
   timeline: ITimeline;
   ownerFull: User;
 }
 
 export interface CurrentProjectState {
-    currentProject: Project | undefined;
-    fetching: boolean;
+  currentProject: Project | undefined;
+  fetching: boolean;
 }

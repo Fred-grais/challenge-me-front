@@ -17,22 +17,25 @@ const meProjectNamespace: string = 'meProjectState';
 @Component({
   components: {
     Form,
-  }
+  },
 })
 export default class ProjectProfile extends Vue {
+  @Action('fetchData', { namespace: meProjectNamespace }) public fetchData!: (
+    projectId: number,
+  ) => void;
 
-  @Action('fetchData', { namespace: meProjectNamespace }) fetchData!: (projectId: number) => void;
-
-  created() {
+  public created() {
     this.fetchProjectDetails();
   }
 
-  fetchProjectDetails() {
+  public fetchProjectDetails() {
     this.fetchData(+this.$route.params.id);
   }
 
   @Watch('$route')
-  onRouteChanged(val: string, oldVal: string) { this.fetchProjectDetails(); }
+  public onRouteChanged(val: string, oldVal: string) {
+    this.fetchProjectDetails();
+  }
 }
 </script>
 

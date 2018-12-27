@@ -69,30 +69,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Form extends Vue {
-  email: string = '';
-  password: string = '';
+  public email: string = '';
+  public password: string = '';
 
-  errors: string[] = [];
+  public errors: string[] = [];
 
-  private signUp(): void {
-    this.errors = [];
-
-    console.log('HEREE');
-
-    this.$auth.register({
-      params: {
-        email: this.email,
-        password: this.password,
-      }, // data: {} in Axios
-      success: function () {},
-      error: this.onRegisterError,
-      autoLogin: true,
-      rememberMe: true,
-      redirect: {name: 'me'},
-    });
-  }
-
-  onRegisterError(res: any): void {
+  public onRegisterError(res: any): void {
     if (res.response) {
       if (res.response.status === 422) {
         const errors = res.response.data.errors;
@@ -107,6 +89,23 @@ export default class Form extends Vue {
     } else {
       this.errors.push('The server seems unresponsive, please try again later.');
     }
+  }
+
+  private signUp(): void {
+    this.errors = [];
+
+    this.$auth.register({
+      params: {
+        email: this.email,
+        password: this.password,
+      }, // data: {} in Axios
+      // tslint:disable-next-line:no-empty
+      success() {},
+      error: this.onRegisterError,
+      autoLogin: true,
+      rememberMe: true,
+      redirect: {name: 'me'},
+    });
   }
 }
 </script>

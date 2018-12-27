@@ -1,13 +1,21 @@
 <template>
   <div class="timeline-editor">
-      <timeline ref="timeline" :timeline="proxyTimeline" :editMode="true" v-on:updated-item="gatherItems"></timeline>
-      <button class="btn btn-secondary btn-form display-4 submit-button submit-button" v-on:click="addTimelineItem()">Add item</button>
+    <timeline
+      ref="timeline"
+      :timeline="proxyTimeline"
+      :editMode="true"
+      v-on:updated-item="gatherItems"
+    ></timeline>
+    <button
+      class="btn btn-secondary btn-form display-4 submit-button submit-button"
+      v-on:click="addTimelineItem()"
+    >Add item</button>
   </div>
 </template>
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 
-import {ITimeline, ITimelineItem} from '@/store/common/types';
+import { ITimeline, ITimelineItem } from '@/store/common/types';
 import ItemEditor from '@/components/widgets/timeline-editor/ItemEditor.vue';
 import Timeline from '@/components/widgets/Timeline.vue';
 
@@ -16,49 +24,55 @@ import moment from 'moment';
 
 @Component({
   components: {
-    Timeline
-  }
+    Timeline,
+  },
 })
 export default class TimelineEditor extends Vue {
-  @Prop({type: Object, default: () => { return {items: []}; }}) timeline!: ITimeline;
+  @Prop({
+    type: Object,
+    default: () => {
+      return { items: [] };
+    },
+  })
+  public timeline!: ITimeline;
 
   // Proxyfy the base timeline so changes are only local to this component and not reflected on the main data
-  proxyTimeline: ITimeline = {
-    items: []
+  public proxyTimeline: ITimeline = {
+    items: [],
   };
-  updatedTimeline: ITimeline = {
-    items: []
+  public updatedTimeline: ITimeline = {
+    items: [],
   };
 
-  created() {
+  public created() {
     this.proxyTimeline = _.cloneDeep(this.timeline);
   }
 
-  addTimelineItem() {
+  public addTimelineItem() {
     this.proxyTimeline.items.push(this.generateDefaultTimelineItem());
   }
 
-  generateDefaultTimelineItem(): ITimelineItem {
+  public generateDefaultTimelineItem(): ITimelineItem {
     return {
       title: 'Placeholder Title',
       description: 'Placeholder Description',
-      date: moment()
-    }
+      date: moment(),
+    };
   }
 
-  returnUpdatedTimeline() {
+  public returnUpdatedTimeline() {
     this.updatedTimeline.items = [];
     (this.$refs.timeline as Timeline).getUpdatedItems();
     this.updatedTimelineReturned(this.updatedTimeline);
   }
 
-  gatherItems(item: ITimelineItem) {
+  public gatherItems(item: ITimelineItem) {
     this.updatedTimeline.items.push(item);
   }
 
   @Emit()
-  updatedTimelineReturned(returnedTimeline: ITimeline) {}
-
+  // tslint:disable-next-line:no-empty
+  public updatedTimelineReturned(returnedTimeline: ITimeline) {}
 }
 </script>
 <style lang="scss" scoped>

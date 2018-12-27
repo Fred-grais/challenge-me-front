@@ -13,7 +13,7 @@ import MainPodcastViewer from '@/components/widgets/news-feed/MainPodcastViewer.
 @Component({
   components: {
     SitePresentation,
-    MainPodcastViewer
+    MainPodcastViewer,
   },
 })
 export default class Home extends Vue {}

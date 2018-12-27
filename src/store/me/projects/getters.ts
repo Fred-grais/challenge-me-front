@@ -3,7 +3,7 @@ import { MeProjectsState } from './types';
 import { ProjectPreview } from '@/store/projects/types';
 import { RootState } from '../../types';
 
-import * as _ from 'lodash';
+import chunk from 'lodash/chunk';
 
 export const getters: GetterTree<MeProjectsState, RootState> = {
   getProjects(state): ProjectPreview[] {
@@ -11,13 +11,13 @@ export const getters: GetterTree<MeProjectsState, RootState> = {
 
     return projects;
   },
-  getChunkedProjects(state, getters) {
-    const projects = getters.getProjects;
+  getChunkedProjects(state, mGetters) {
+    const projects = mGetters.getProjects;
 
-    return _.chunk(projects, 3);
+    return chunk(projects, 3);
   },
   isFetching(state) {
-      const { fetching } = state;
-      return fetching;
-  }
+    const { fetching } = state;
+    return fetching;
+  },
 };

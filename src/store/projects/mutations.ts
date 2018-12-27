@@ -7,5 +7,5 @@ export const mutations: MutationTree<ProjectsState> = {
   },
   setFetching(state, isFetching: boolean) {
     state.fetching = isFetching;
-  }
+  },
 };

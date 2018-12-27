@@ -1,5 +1,5 @@
 import { Moment } from 'moment';
-import * as _ from 'lodash';
+import find from 'lodash/find';
 
 export interface Message {
   senderId: number;
@@ -18,18 +18,18 @@ export interface ConversationPreview extends ConversationBase {
 }
 
 export class Conversation implements ConversationBase {
-  id!: number;
-  expandedRecipients!: User[];
-  displayedMessages!: Message[];
+  public id!: number;
+  public expandedRecipients!: User[];
+  public displayedMessages!: Message[];
 
-  constructor(conversation: {id: number, expandedRecipients: User[], displayedMessages: Message[]}) {
-      this.id = conversation.id;
-      this.expandedRecipients = conversation.expandedRecipients;
-      this.displayedMessages = conversation.displayedMessages;
+  constructor(conversation: { id: number, expandedRecipients: User[], displayedMessages: Message[] }) {
+    this.id = conversation.id;
+    this.expandedRecipients = conversation.expandedRecipients;
+    this.displayedMessages = conversation.displayedMessages;
   }
 
-  getRecipient(recipientId: number) {
-    return _.find(this.expandedRecipients, (recipient) => {
+  public getRecipient(recipientId: number) {
+    return find(this.expandedRecipients, (recipient) => {
       return recipient.id === recipientId;
     });
   }

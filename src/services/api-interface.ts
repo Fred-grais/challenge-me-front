@@ -1,89 +1,97 @@
-import environment from '@/environments/environment';
 import Vue from 'vue';
 import { Me } from '@/store/me/types';
 import { Project } from '@/store/current-project/types';
 
 class ApiInterface {
-    static readonly BASEURL: string = <string>process.env.VUE_APP_API_BASE;
+  public static readonly BASEURL: string = process.env.VUE_APP_API_BASE as string;
 
-    static readonly ENDPOINTS : any = {
-      getAllUsers: '/users',
-      getUser: '/users',
-      updateMe: '/auth',
-      createProject: '/api/v1/me/projects',
-      updateProject: '/api/v1/me/projects',
-      getMyProject: '/api/v1/me/projects',
-      listMyProjects: '/api/v1/me/projects',
-      getAllProjects: '/projects',
-      getProject: '/projects',
-      searchTags: '/api/v1/tags',
-      getMainPodcast: '/podcasts',
-      getConversationPreviews: '/api/v1/me/conversations',
-      getConversation: '/api/v1/me/conversations',
-      createMessage: '/api/v1/me/messages',
-    }
+  public static readonly ENDPOINTS: any = {
+    getAllUsers: '/users',
+    getUser: '/users',
+    updateMe: '/auth',
+    createProject: '/api/v1/me/projects',
+    updateProject: '/api/v1/me/projects',
+    getMyProject: '/api/v1/me/projects',
+    listMyProjects: '/api/v1/me/projects',
+    getAllProjects: '/projects',
+    getProject: '/projects',
+    searchTags: '/api/v1/tags',
+    searchUsers: '/api/v1/users',
+    getMainPodcast: '/podcasts',
+    getConversationPreviews: '/api/v1/me/conversations',
+    getConversation: '/api/v1/me/conversations',
+    createConversation: '/api/v1/me/conversations',
+    createMessage: '/api/v1/me/messages',
+  };
+  // tslint:disable-next-line:no-empty
+  constructor() {}
 
-    constructor() {}
+  public getAllUsers(): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('getAllUsers'));
+  }
 
-    getAllUsers(): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('getAllUsers'));
-    }
+  public getUser(userId: number): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('getUser') + '/' + userId);
+  }
 
-    getUser(userId: number): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('getUser') + '/' + userId);
-    }
+  public getAllProjects(): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('getAllProjects'));
+  }
 
-    getAllProjects(): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('getAllProjects'));
-    }
+  public getProject(projectId: number): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('getProject') + '/' + projectId);
+  }
 
-    getProject(projectId: number): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('getProject') + '/' + projectId);
-    }
+  public updateMe(params: Partial<Me>): Promise<any> {
+    return Vue.axios.put(this.generateEndpoint('updateMe'), params);
+  }
 
-    updateMe(params: Partial<Me>): Promise<any> {
-      return Vue.axios.put(this.generateEndpoint('updateMe'), params);
-    }
+  public createProject(params: Project): Promise<any> {
+    return Vue.axios.post(this.generateEndpoint('createProject'), params);
+  }
 
-    createProject(params: Project): Promise<any> {
-      return Vue.axios.post(this.generateEndpoint('createProject'), params);
-    }
+  public updateProject(params: Partial<Project>): Promise<any> {
+    return Vue.axios.put(this.generateEndpoint('updateProject') + '/' + params.id, params);
+  }
 
-    updateProject(params: Partial<Project>): Promise<any> {
-      return Vue.axios.put(this.generateEndpoint('updateProject') + '/' + params.id, params);
-    }
+  public getMyProject(projectId: number): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('getMyProject') + '/' + projectId);
+  }
 
-    getMyProject(projectId: number): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('getMyProject') + '/' + projectId);
-    }
+  public listMyProjects(): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('listMyProjects'));
+  }
 
-    listMyProjects(): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('listMyProjects'));
-    }
+  public searchTags(search: string): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('searchTags') + '?search=' + search);
+  }
 
-    searchTags(search: string): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('searchTags') + '?search=' + search);
-    }
+  public searchUsers(search: string): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('searchUsers') + '?search=' + search);
+  }
 
-    getMainPodcast(): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('getMainPodcast'));
-    }
+  public getMainPodcast(): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('getMainPodcast'));
+  }
 
-    getConversationPreviews(): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('getConversationPreviews'));
-    }
+  public getConversationPreviews(): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('getConversationPreviews'));
+  }
 
-    getConversation(conversationId: number): Promise<any> {
-      return Vue.axios.get(this.generateEndpoint('getConversation') + '/' + conversationId);
-    }
+  public getConversation(conversationId: number): Promise<any> {
+    return Vue.axios.get(this.generateEndpoint('getConversation') + '/' + conversationId);
+  }
 
-    createMessage(conversationId: number, message: string): Promise<any> {
-      return Vue.axios.post(this.generateEndpoint('createMessage'), {message: {conversationId, message}})
-    }
+  public createConversation(recipients: string[], message: string): Promise<any> {
+    return Vue.axios.post(this.generateEndpoint('createConversation'), { conversation: { recipients, message } });
+  }
+  public createMessage(conversationId: number, message: string): Promise<any> {
+    return Vue.axios.post(this.generateEndpoint('createMessage'), { message: { conversationId, message } });
+  }
 
-    private generateEndpoint(key: string): string {
-      return ApiInterface.BASEURL + ApiInterface.ENDPOINTS[key];
-    }
+  private generateEndpoint(key: string): string {
+    return ApiInterface.BASEURL + ApiInterface.ENDPOINTS[key];
+  }
 }
 
 export default ApiInterface;
