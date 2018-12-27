@@ -12,5 +12,5 @@ export const getters: GetterTree<MeProjectState, RootState> = {
     const { fetching } = state;
 
     return fetching;
-  }
+  },
 };

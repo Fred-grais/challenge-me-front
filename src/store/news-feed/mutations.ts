@@ -9,5 +9,5 @@ export const mutations: MutationTree<NewsFeedState> = {
   },
   setFetching(state, isFetching: boolean) {
     state.fetching = isFetching;
-  }
+  },
 };

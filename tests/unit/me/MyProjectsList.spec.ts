@@ -1,7 +1,6 @@
 import { expect } from 'chai';
-import Vuex from 'vuex'
-import VueRouter from 'vue-router'
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import MyProjectsList from '@/components/me/MyProjectsList.vue';
 import PreviewCard from '@/components/me/project/PreviewCard.vue';
 import { meProjectsState } from '@/store/me/projects/index';
@@ -45,11 +44,11 @@ describe('Me/MyProjectsList.vue', () => {
   beforeEach(() => {
     state = {
       projects,
-      fetching
+      fetching,
     };
 
     actions = {
-      fetchData: sinon.stub()
+      fetchData: sinon.stub(),
     };
 
     store = new Vuex.Store({
@@ -58,11 +57,11 @@ describe('Me/MyProjectsList.vue', () => {
           namespaced: true,
           state,
           actions,
-          getters: meProjectsState.getters
-        }
-      }
+          getters: meProjectsState.getters,
+        },
+      },
     });
-  })
+  });
 
   it('should call the fetchDetails method on creation', () => {
     const wrapper = shallowMount(MyProjectsList, {
@@ -104,10 +103,10 @@ describe('Me/MyProjectsList.vue', () => {
     });
 
     const previewCards: any = wrapper.findAll(PreviewCard);
-    expect(previewCards).to.have.lengthOf(2);;
+    expect(previewCards).to.have.lengthOf(2);
 
     previewCards.wrappers.forEach((wrapper: any, i: any) => { //
-      expect(wrapper.props().projectPreview).to.equal(projects[i]) //
-    })
+      expect(wrapper.props().projectPreview).to.equal(projects[i]); //
+    });
   });
 });

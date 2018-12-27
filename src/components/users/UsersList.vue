@@ -4,16 +4,13 @@
       <pulse-loader :loading="isFetching"></pulse-loader>
       <div class="container align-center" v-if="!isFetching">
         <div class="errors">
-          <div class="error" v-for="error in errors" :key="error">
-            {{ error }}
-          </div>
+          <div class="error" v-for="error in errors" :key="error">{{ error }}</div>
         </div>
 
-        <h3 class="pb-5 mbr-section-subtitle mbr-fonts-style mbr-light display-1">
-            Users</h3>
+        <h3 class="pb-5 mbr-section-subtitle mbr-fonts-style mbr-light display-1">Users</h3>
 
         <div v-for="(users, index) in chunkedUsers" :key="index" class="row media-row">
-          <PreviewCard v-for="user in users" :key="user.id" :userPreview="user" />
+          <PreviewCard v-for="user in users" :key="user.id" :userPreview="user"/>
         </div>
       </div>
     </section>
@@ -33,24 +30,29 @@ const usersNamespace: string = 'usersState';
 @Component({
   components: {
     PreviewCard,
-    PulseLoader
-  }
+    PulseLoader,
+  },
 })
 export default class UsersList extends Vue {
-  errors: string[] = [];
+  public errors: string[] = [];
 
-  color= '#3AB982';
-  margin= '10px';
-  radius= '10px';
-  size='15px';
+  public color = '#3AB982';
+  public margin = '10px';
+  public radius = '10px';
+  public size = '15px';
 
-  @Getter('getChunkedUsers', { namespace: usersNamespace }) chunkedUsers!: UserPreview[][];
-  @Getter('isFetching', { namespace: usersNamespace }) isFetching!: boolean;
-  @Action('fetchData', { namespace: usersNamespace }) fetchData!: () => Promise<any>;
+  @Getter('getChunkedUsers', { namespace: usersNamespace })
+  public chunkedUsers!: UserPreview[][];
+  @Getter('isFetching', { namespace: usersNamespace }) public isFetching!: boolean;
+  @Action('fetchData', { namespace: usersNamespace }) public fetchData!: () => Promise<
+    any
+  >;
 
-  created() {
-    this.fetchData().catch( (error: any) => {
-      this.errors.push(error.message || 'An error occured, please try again later.');
+  public created() {
+    this.fetchData().catch((error: any) => {
+      this.errors.push(
+        error.message || 'An error occured, please try again later.',
+      );
     });
   }
 }

@@ -1,6 +1,5 @@
 import { ActionTree } from 'vuex';
 import { MeProjectsState } from './types';
-import { Project } from '@/store/current-project/types';
 import { RootState } from '../../types';
 
 import ApiInterface from '@/services/api-interface.ts';
@@ -12,7 +11,7 @@ export const actions: ActionTree<MeProjectsState, RootState> = {
     commit('setFetching', true);
 
     return apiInterface.listMyProjects()
-      .then( (response) => {
+      .then((response) => {
         commit('setProjects', response.data);
         commit('setFetching', false);
         return response;

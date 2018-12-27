@@ -1,31 +1,33 @@
 <template>
   <div class="my-projects">
-  <section class="mbr-section content5 cid-r3amUe0ElS mbr-parallax-background" id="content5-t">
-
+    <section class="mbr-section content5 cid-r3amUe0ElS mbr-parallax-background" id="content5-t">
       <div class="container">
-          <div class="media-container-row">
-              <div class="title col-12 col-md-8">
-                  <h2 class="align-center mbr-bold mbr-white pb-3 mbr-fonts-style display-1">My Projects</h2>
-              </div>
+        <div class="media-container-row">
+          <div class="title col-12 col-md-8">
+            <h2 class="align-center mbr-bold mbr-white pb-3 mbr-fonts-style display-1">My Projects</h2>
           </div>
-      </div>
-  </section>
-  <br/>
-  <br/>
-
-  <Form/>
-
-  <section class="features3 cid-r3ao134aCf" id="features3-z">
-    <pulse-loader :loading="isFetching"></pulse-loader>
-
-    <div class="container" v-if="!isFetching">
-        <div v-for="(chunk, index) in projectsPreviews" :key="index" class="media-container-row">
-            <PreviewCard v-for="projectPreview in chunk" :key="projectPreview.id" :projectPreview="projectPreview" />
         </div>
-    </div>
-  </section>
-</div>
+      </div>
+    </section>
+    <br>
+    <br>
 
+    <Form/>
+
+    <section class="features3 cid-r3ao134aCf" id="features3-z">
+      <pulse-loader :loading="isFetching"></pulse-loader>
+
+      <div class="container" v-if="!isFetching">
+        <div v-for="(chunk, index) in projectsPreviews" :key="index" class="media-container-row">
+          <PreviewCard
+            v-for="projectPreview in chunk"
+            :key="projectPreview.id"
+            :projectPreview="projectPreview"
+          />
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script lang="ts">
@@ -46,17 +48,19 @@ const meProjectsNamespace: string = 'meProjectsState';
   components: {
     PreviewCard,
     Form,
-    PulseLoader
-  }
+    PulseLoader,
+  },
 })
 export default class MyProjectsList extends Vue {
+  @Getter('getChunkedProjects', { namespace: meProjectsNamespace })
+  public projectsPreviews!: ProjectPreview[][];
+  @Getter('isFetching', { namespace: meProjectsNamespace })
+  public isFetching!: boolean;
 
-  @Getter('getChunkedProjects', { namespace: meProjectsNamespace }) projectsPreviews!: ProjectPreview[][];
-  @Getter('isFetching', { namespace: meProjectsNamespace }) isFetching!: boolean;
+  @Action('fetchData', { namespace: meProjectsNamespace })
+  public fetchData!: () => Promise<any>;
 
-  @Action('fetchData', { namespace: meProjectsNamespace }) fetchData!: () => Promise<any>;
-
-  created() {
+  public created() {
     this.fetchData();
   }
 }

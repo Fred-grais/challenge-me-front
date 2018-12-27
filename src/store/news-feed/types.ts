@@ -12,6 +12,6 @@ export interface Podcast {
 }
 
 export interface NewsFeedState {
-    mainPodcast?: Podcast;
-    fetching: boolean;
+  mainPodcast?: Podcast;
+  fetching: boolean;
 }

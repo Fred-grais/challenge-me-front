@@ -250,7 +250,7 @@ describe('project/EditForm.vue', () => {
 
         wrapper.find('.submit-button').trigger('click');
 
-        // Needs to call nextTick twice when checking a catch clause if there is a then clause before
+        // Need to call nextTick twice when checking a catch clause if there is a then clause before
         wrapper.vm.$nextTick(() => {
           wrapper.vm.$nextTick(() => {
             expect(wrapper.find('.errors').text()).to.contains('Backend Error 1');

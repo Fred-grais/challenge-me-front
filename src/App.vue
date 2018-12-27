@@ -8,9 +8,7 @@
       <div class="global-loader-inner-container">
         <div class="inline-wrapper">
           <grid-loader :color="color" :size="size"></grid-loader>
-
         </div>
-
       </div>
     </div>
     <Footer/>
@@ -22,26 +20,24 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import Header from '@/components/layout/Header.vue';
 import Footer from '@/components/layout/Footer.vue';
-import GridLoader from 'vue-spinner/src/GridLoader.vue'
+import GridLoader from 'vue-spinner/src/GridLoader.vue';
 
 @Component({
   components: {
     Header,
     Footer,
     GridLoader,
-  }
+  },
 })
 export default class App extends Vue {
-  color = '#fff';
-  size = '25px';
+  public color = '#fff';
+  public size = '25px';
 
   get authReady(): boolean {
     return this.$auth.ready();
   }
 }
-
 </script>
 
 <style lang="scss">
-
 </style>

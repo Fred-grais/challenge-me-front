@@ -11,11 +11,11 @@ export const actions: ActionTree<MeState, RootState> = {
     commit('setFetching', true);
 
     return apiInterface.updateMe(me)
-      .then( (response) => {
+      .then((response) => {
         commit('setMe', me);
         commit('setFetching', false);
 
         return response;
-      })
+      });
   },
 };

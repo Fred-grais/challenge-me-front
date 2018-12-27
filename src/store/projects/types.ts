@@ -7,6 +7,6 @@ export interface ProjectPreview {
 }
 
 export interface ProjectsState {
-    projects: ProjectPreview[];
-    fetching: boolean;
+  projects: ProjectPreview[];
+  fetching: boolean;
 }

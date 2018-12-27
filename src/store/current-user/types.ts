@@ -7,6 +7,6 @@ export interface User {
 }
 
 export interface CurrentUserState {
-    currentUser: User | undefined;
-    fetching: boolean;
+  currentUser: User | undefined;
+  fetching: boolean;
 }

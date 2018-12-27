@@ -23,14 +23,14 @@
         <div v-if="!editMode">{{ formattedDate }}</div>
         <div v-if="editMode"><datepicker v-model="updatedDate"></datepicker></div>
       </div>
-      <p>
+      <div>
         <div v-if="!editMode">
           {{description}}
         </div>
         <div v-if="editMode">
           <textarea v-model="updatedDescription"></textarea>
         </div>
-      </p>
+      </div>
       <a class="bnt-more" href="javascript:void(0)">More</a>
     </div>
   </div>
@@ -47,31 +47,31 @@ import moment from 'moment';
 @Component({
   components: {
     Datepicker,
-  }
+  },
 })
 export default class Item extends Vue {
-  @Prop(String) title!: string;
-  @Prop(Object) date!: moment.Moment;
-  @Prop(String) description!: string;
+  @Prop(String) public title!: string;
+  @Prop(Object) public date!: moment.Moment;
+  @Prop(String) public description!: string;
 
-  @Prop({type: Boolean, default: false}) fadeInLeft!: boolean;
-  @Prop(String) imageUrl: string | undefined;
+  @Prop({type: Boolean, default: false}) public fadeInLeft!: boolean;
+  @Prop(String) public imageUrl: string | undefined;
 
-  @Prop({type: Boolean, default: false}) editMode!: boolean;
+  @Prop({type: Boolean, default: false}) public editMode!: boolean;
 
-  @Prop(Number) itemIndex!: number;
+  @Prop(Number) public itemIndex!: number;
 
-  containsImage: boolean = false;
+  public containsImage: boolean = false;
 
-  updatedTitle: string = '';
-  updatedDescription: string = '';
+  public updatedTitle: string = '';
+  public updatedDescription: string = '';
   // Must use the Date type here instead of Moment because the datePicker does not support Moment input
-  updatedDate: Date = new Date();
-  updatedImageUrl: string | undefined = '';
+  public updatedDate: Date = new Date();
+  public updatedImageUrl: string | undefined = '';
 
-  showImgUrlPicker: boolean = false;
+  public showImgUrlPicker: boolean = false;
 
-  created() {
+  public created() {
     this.containsImage = !!this.imageUrl;
 
     this.updatedTitle = this.title;
@@ -86,7 +86,7 @@ export default class Item extends Vue {
       'js--fadeInLeft': this.fadeInLeft,
       'js--fadeInRight': !this.fadeInLeft,
       'timeline-card': this.containsImage || this.editMode,
-    }
+    };
   }
 
   get headerImageUrl() {
@@ -97,28 +97,30 @@ export default class Item extends Vue {
     return this.date.format('DD MMMM YYYY');
   }
 
-  emitUpdatedItem() {
+  public emitUpdatedItem() {
     this.updatedItem({
       title: this.updatedTitle,
       description: this.updatedDescription,
       date: moment(this.updatedDate),
-      imageUrl: this.updatedImageUrl
-    })
+      imageUrl: this.updatedImageUrl,
+    });
   }
 
-  openImgUrlPicker() {
+  public openImgUrlPicker() {
     this.showImgUrlPicker = true;
   }
 
-  deleteItem() {
+  public deleteItem() {
     this.deletedItem(this.itemIndex);
   }
 
   @Emit()
-  updatedItem(returnedTimelineItem: ITimelineItem) {}
+  // tslint:disable-next-line:no-empty
+  public updatedItem(returnedTimelineItem: ITimelineItem) {}
 
   @Emit()
-  deletedItem(itemIndex: number) {}
+  // tslint:disable-next-line:no-empty
+  public deletedItem(itemIndex: number) {}
 
 }
 </script>
