@@ -1,7 +1,7 @@
 <template>
   <div class="main-podcast-viewer">
     <h2>Podcast of the day</h2>
-    <PodcastViewer class='main-podcast' :podcast='mainPodcast'/>
+    <PodcastViewer class="main-podcast" :podcast="mainPodcast"/>
   </div>
 </template>
 
@@ -17,22 +17,23 @@ const newsFeedNamespace = 'newsFeedState';
 @Component({
   components: {
     PodcastViewer,
-  }
+  },
 })
 export default class MainPodcastViewer extends Vue {
+  @Action('fetchMainPodcast', { namespace: newsFeedNamespace })
+  public fetchMainPodcast!: () => Promise<any>;
+  @Getter('getMainPodcast', { namespace: newsFeedNamespace })
+  public mainPodcast!: Podcast;
 
-  @Action('fetchMainPodcast', { namespace: newsFeedNamespace }) fetchMainPodcast!: () => Promise<any>;
-  @Getter('getMainPodcast', { namespace: newsFeedNamespace }) mainPodcast!: Podcast;
-
-  created() {
+  public created() {
     this.fetchMainPodcast();
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .main-podcast {
-    margin: auto;
-    max-width: 30% !important;
-  }
+.main-podcast {
+  margin: auto;
+  max-width: 30% !important;
+}
 </style>

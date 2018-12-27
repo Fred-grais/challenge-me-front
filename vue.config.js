@@ -5,6 +5,7 @@ module.exports = {
         devServer: {
             overlay: true
         },
+        devtool: 'source-map',
     },
 
     css: {

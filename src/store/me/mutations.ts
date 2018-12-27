@@ -6,7 +6,6 @@ export const mutations: MutationTree<MeState> = {
     state.me = me;
   },
   setFetching(state, isFetching: boolean) {
-    console.log('fetching', isFetching);
     state.fetching = isFetching;
-  }
+  },
 };

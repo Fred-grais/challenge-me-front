@@ -4,12 +4,12 @@ import { RootState } from '../types';
 
 export const getters: GetterTree<ProjectsState, RootState> = {
   getProjects(state) {
-    const {projects} = state;
+    const { projects } = state;
 
     return projects;
   },
   isFetching(state) {
-      const { fetching } = state;
-      return fetching;
-  }
+    const { fetching } = state;
+    return fetching;
+  },
 };

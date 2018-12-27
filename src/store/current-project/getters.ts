@@ -4,7 +4,7 @@ import { RootState } from '../types';
 
 export const getters: GetterTree<CurrentProjectState, RootState> = {
   getCurrentProject(state) {
-    const {currentProject} = state;
+    const { currentProject } = state;
     return currentProject;
   },
   getFetchingState(state) {

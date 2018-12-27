@@ -1,27 +1,24 @@
 <template>
-  <div id="">
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    Video Chat
-<br/>
+  <div id>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>Video Chat
+    <br>
     <button type="button" @click="revealId()">RevealID</button>
-    <br/>
+    <br>
     <div>{{this.id}}</div>
-<br/>
-
-
+    <br>
 
     <div>
-      <video ref='videoElement' id="their-video" autoplay playsinline></video>
-      <video  ref='myVideoElement' id="my-video" muted="true" autoplay playsinline></video>
+      <video ref="videoElement" id="their-video" autoplay playsinline></video>
+      <video ref="myVideoElement" id="my-video" muted="true" autoplay playsinline></video>
     </div>
 
     <div>
@@ -29,7 +26,6 @@
       <ul>
         <li v-for="(peer, index) in connectedPeersList" :key="index">
           <button @click="makeCall(peer)">{{peer}}</button>
-
         </li>
       </ul>
     </div>
@@ -41,18 +37,17 @@ import VideoChatInterface from '@/services/video-chat.ts';
 
 @Component
 export default class VideoChat extends Vue {
-  videoChatInterface!: VideoChatInterface;
-  targetPeerId: string = "";
-  calleeStreamUrl: string = "";
+  public videoChatInterface!: VideoChatInterface;
+  public targetPeerId: string = '';
+  public calleeStreamUrl: string = '';
 
-  id: string = '';
-  connectedPeersList: string[] = [];
+  public id: string = '';
+  public connectedPeersList: string[] = [];
 
-  created() {
-    this.videoChatInterface = new VideoChatInterface;
+  public created() {
+    this.videoChatInterface = new VideoChatInterface();
     setInterval(() => {
       this.videoChatInterface.listAllConnectedPeers((list: any) => {
-        console.log(list);
         this.connectedPeersList = list;
       });
     }, 3000);
@@ -62,7 +57,6 @@ export default class VideoChat extends Vue {
       this.displayMyStream(this.videoChatInterface.localStream);
 
       call.on('stream', (stream: any) => {
-        console.log('receiving stream...');
         this.displayStream(stream);
       });
 
@@ -76,11 +70,10 @@ export default class VideoChat extends Vue {
     });
   }
 
-  makeCall(peerId: string) {
+  public makeCall(peerId: string) {
     const call = this.videoChatInterface.callPeer(peerId);
     this.displayMyStream(this.videoChatInterface.localStream);
     call.on('stream', (stream: any) => {
-      console.log('receiving stream...');
       this.displayStream(stream);
     });
 
@@ -93,25 +86,24 @@ export default class VideoChat extends Vue {
     });
   }
 
-  revealId() {
+  public revealId() {
     this.id = this.videoChatInterface.peer.id;
     alert(this.id);
   }
 
-
-  displayStream(stream: any) {
+  public displayStream(stream: any) {
     this.videoElement.srcObject = stream;
   }
 
-  displayMyStream(stream: any) {
+  public displayMyStream(stream: any) {
     this.myVideoElement.srcObject = stream;
   }
 
-  onCallError(error: any) {
+  public onCallError(error: any) {
     alert('Error' + ' ' + error);
   }
 
-  onCallClosed() {
+  public onCallClosed() {
     alert('Call Closed');
     this.videoElement.srcObject = null;
     this.myVideoElement.srcObject = null;

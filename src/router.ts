@@ -38,7 +38,7 @@ export default new Router({
     },
     {
       path: '/me',
-      meta: {auth: true},
+      meta: { auth: true },
       component: () => import(/* webpackChunkName: "about" */ './views/MeLayout.vue'),
       children: [
         {
@@ -60,8 +60,8 @@ export default new Router({
           path: 'inbox',
           name: 'inbox',
           component: () => import(/* webpackChunkName: "about" */ './views/me/Inbox.vue'),
-        }
-      ]
+        },
+      ],
     },
     {
       path: '/login',
@@ -77,6 +77,6 @@ export default new Router({
       path: '/test',
       name: 'test',
       component: () => import(/* webpackChunkName: "about" */ './views/Test.vue'),
-    }
+    },
   ],
 });

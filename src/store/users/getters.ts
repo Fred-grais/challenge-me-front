@@ -9,13 +9,12 @@ export const getters: GetterTree<UsersState, RootState> = {
     const { users } = state;
     return users;
   },
-  getChunkedUsers(state, getters) {
-    const users = getters.getUsers;
-
+  getChunkedUsers(state, mGetters) {
+    const users = mGetters.getUsers;
     return _.chunk(users, 4);
   },
   isFetching(state) {
-      const { fetching } = state;
-      return fetching;
-  }
+    const { fetching } = state;
+    return fetching;
+  },
 };

@@ -7,6 +7,6 @@ export interface Me {
 }
 
 export interface MeState {
-    me: Me | undefined;
-    fetching: boolean;
+  me: Me | undefined;
+  fetching: boolean;
 }

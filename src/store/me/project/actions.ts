@@ -12,7 +12,7 @@ export const actions: ActionTree<MeProjectState, RootState> = {
     commit('setFetching', true);
 
     return apiInterface.getMyProject(projectId)
-      .then( (response) => {
+      .then((response) => {
         commit('setProject', response.data);
         commit('setFetching', false);
 
@@ -24,9 +24,9 @@ export const actions: ActionTree<MeProjectState, RootState> = {
     commit('setFetching', true);
 
     return apiInterface.createProject(project)
-      .then( (response) => {
-        //commit('setProject', response.data);
-        commit('meProjectsState/addProject', response.data, {root: true});
+      .then((response) => {
+        // commit('setProject', response.data);
+        commit('meProjectsState/addProject', response.data, { root: true });
         commit('setFetching', false);
 
         return response;
@@ -37,7 +37,7 @@ export const actions: ActionTree<MeProjectState, RootState> = {
     commit('setFetching', true);
 
     return apiInterface.updateProject(project)
-      .then( (response) => {
+      .then((response) => {
         commit('setProject', response.data);
         commit('setFetching', false);
 
