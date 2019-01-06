@@ -57,8 +57,8 @@ export default new Router({
           component: () => import(/* webpackChunkName: "about" */ './views/me/Project.vue'),
         },
         {
-          path: 'inbox',
-          name: 'inbox',
+          path: 'chat',
+          name: 'chat',
           component: () => import(/* webpackChunkName: "about" */ './views/me/Inbox.vue'),
         },
       ],

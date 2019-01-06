@@ -16,4 +16,9 @@ export default class Inbox extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.inbox {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+}
 </style>

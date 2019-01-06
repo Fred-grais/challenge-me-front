@@ -10,7 +10,8 @@
                  Challenge Me allows you to confront your ideas with other entrepeneurs to better them</p>
               <div class="mbr-section-btn align-right">
                 <router-link class="btn btn-md btn-primary display-4" to="/projects">Browse Projects</router-link>
-                  <router-link class="btn btn-md btn-white-outline display-4" to="/users">Browse Users</router-link>
+                <router-link class="btn btn-md btn-white-outline display-4" to="/users">Browse Users</router-link>
+                <router-link class="btn btn-md btn-info display-4" to="/me/chat">Chat with others</router-link>
               </div>
           </div>
       </div>
