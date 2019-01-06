@@ -22,6 +22,7 @@ class ApiInterface {
     getConversation: '/api/v1/me/conversations',
     createConversation: '/api/v1/me/conversations',
     createMessage: '/api/v1/me/messages',
+    createChatSession: '/api/v1/me/chat_sessions',
   };
   // tslint:disable-next-line:no-empty
   constructor() {}
@@ -87,6 +88,10 @@ class ApiInterface {
   }
   public createMessage(conversationId: number, message: string): Promise<any> {
     return Vue.axios.post(this.generateEndpoint('createMessage'), { message: { conversationId, message } });
+  }
+
+  public createChatSession(): Promise<any> {
+    return Vue.axios.post(this.generateEndpoint('createChatSession'));
   }
 
   private generateEndpoint(key: string): string {

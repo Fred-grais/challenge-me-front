@@ -24,13 +24,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 
 import InboxMessage from '@/components/me/inbox/components/chat-body/Message.vue';
+import ActionCableInterface from '@/services/actioncable-interface.ts';
 
-import { Conversation } from '@/store/me/inbox/types';
+import { Conversation, Message } from '@/store/me/inbox/types';
 import { Me } from '@/store/me/types';
+import { Channel } from 'actioncable';
 import * as _ from 'lodash';
 
 const meInboxNamespace: string = 'meInboxState';
@@ -42,17 +44,7 @@ const meNamespace: string = 'meState';
   },
 })
 export default class InboxChatBody extends Vue {
-  public currentMessage: string = '';
-
-  @Action('createMessage', { namespace: meInboxNamespace }) public createMessage!: (
-    params: { conversationId: number; message: string },
-  ) => Promise<any>;
-
-  @Getter('getCurrentConversation', { namespace: meInboxNamespace })
-  public conversation!: Conversation;
-  @Getter('getMe', { namespace: meNamespace }) public me!: Me;
-
-  get messages() {
+  public get messages() {
     return _.map(this.conversation.displayedMessages, (message) => {
       const currentRecipient = this.conversation.getRecipient(message.senderId);
 
@@ -67,6 +59,20 @@ export default class InboxChatBody extends Vue {
       };
     });
   }
+  public currentMessage: string = '';
+  public currentActionCableChannel!: Channel;
+
+  @Action('createMessage', { namespace: meInboxNamespace })
+  public createMessage!: (
+    params: { conversationId: number; message: string },
+  ) => Promise<any>;
+  @Action('addMessageToConversation', { namespace: meInboxNamespace })
+  public addMessageToConversation!: (message: Message) => void;
+
+  @Getter('getCurrentConversation', { namespace: meInboxNamespace })
+  public conversation!: Conversation;
+  @Getter('getMe', { namespace: meNamespace })
+  public me!: Me;
 
   public sendMessage() {
     this.createMessage({
@@ -77,6 +83,37 @@ export default class InboxChatBody extends Vue {
         this.currentMessage = '';
       }
     });
+  }
+
+  @Watch('conversation')
+  private onConversationChange(val: any, oldVal: any) {
+    if (this.currentActionCableChannel) {
+      this.currentActionCableChannel.unsubscribe();
+    }
+    this.currentActionCableChannel = ActionCableInterface.Instance.subscribeToChannel(
+      {
+        channel: 'ConversationChannel',
+        conversationId: this.conversation.id,
+      },
+      {
+        connected: () => {
+          // tslint:disable-next-line:no-console
+          console.log('connected');
+        },
+        disconnected: () => {
+          // tslint:disable-next-line:no-console
+          console.log('disconnected');
+        },
+        received: (data) => {
+          // tslint:disable-next-line:no-console
+          console.log('received', data);
+
+          if (data.newMessage) {
+            this.addMessageToConversation(data.newMessage);
+          }
+        },
+      },
+    );
   }
 }
 </script>

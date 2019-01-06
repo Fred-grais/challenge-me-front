@@ -89,7 +89,6 @@ export default class CreateConversationModal extends Vue {
   }
 
   public onModalOpen() {
-    console.log('OK');
     this.recipients = [];
     this.error = '';
   }
@@ -118,16 +117,15 @@ export default class CreateConversationModal extends Vue {
       .catch((error) => {
         this.error = error.response.data.errors.join(', ');
       });
-    
   }
 
   public searchUsers(): void {
     if (this.currentRecipient) {
       this.apiInterface
-      .searchUsers(this.currentRecipient)
-      .then((response: any) => {
-        this.autocompleteItems = response.data.results;
-      });
+        .searchUsers(this.currentRecipient)
+        .then((response: any) => {
+          this.autocompleteItems = response.data.results;
+        });
     }
   }
 

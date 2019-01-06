@@ -1,17 +1,28 @@
 <template>
-  <div id="app">
-    <Header/>
-    <div v-if="authReady">
-      <router-view/>
+  <div id="app" class="box">
+
+    <div class="row header">
+      <Header/>
     </div>
-    <div v-if="!authReady" class="global-loader-container">
-      <div class="global-loader-inner-container">
-        <div class="inline-wrapper">
+
+    <div class="row content">
+      <div class="wrapper">
+        <div class="inner-content-wrapper" v-if="authReady">
+          <router-view/>
+        </div>
+        <div v-if="!authReady" class="global-loader">
+          
           <grid-loader :color="color" :size="size"></grid-loader>
+          
         </div>
       </div>
     </div>
-    <Footer/>
+    
+    <div class="footer">
+      <div class="wrapper">
+        <Footer/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -40,4 +51,46 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
+.inner-content-wrapper {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+}
+.box {
+  display: flex;
+  flex-flow: column;
+}
+
+.box .row {
+  border: 1px dotted grey;
+}
+
+.box .row.header {
+  flex: 0 1 auto;
+}
+
+.box .row.content {
+  flex: 1 1 auto;
+
+  .wrapper {
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 auto;
+  }
+}
+
+.box .row.footer {
+  flex: 1 1 40px;
+}
+
+.wrapper {
+  width: 100%;
+}
+
+.global-loader {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
 </style>

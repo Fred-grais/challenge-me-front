@@ -4,13 +4,13 @@
       <div class="container">
         <div class="media-container-row">
           <div class="title col-12 col-md-8">
-            <h2 class="align-center mbr-bold mbr-white pb-3 mbr-fonts-style display-1">Inbox</h2>
+            <h2 class="align-center mbr-bold mbr-white pb-3 mbr-fonts-style display-1">Chat</h2>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="content container-fluid bootstrap snippets">
+    <!-- <div class="content container-fluid bootstrap snippets">
       <div class="row row-broken">
         <div class="col-sm-3 col-xs-12">
           <div
@@ -28,8 +28,15 @@
             <inbox-chat-body></inbox-chat-body>
           </div>
         </div>
-      </div>
-    </div>
+      
+    </div> -->
+        <div class="row">
+          <pulse-loader :loading="!iframeInitialized"></pulse-loader>
+          <!-- <div> -->
+            <iframe v-show="iframeInitialized" ref='iframe' class="chat" :src="rocketChatUrl" @load="afterChatLoaded"></iframe>
+          <!-- </div> -->
+
+        </div>    
   </div>
 </template>
 
@@ -38,276 +45,323 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 
-import InboxConversationsList from '@/components/me/inbox/components/ConversationsList.vue';
-import InboxChatBody from '@/components/me/inbox/components/ChatBody.vue';
+// import InboxConversationsList from '@/components/me/inbox/components/ConversationsList.vue';
+// import InboxChatBody from '@/components/me/inbox/components/ChatBody.vue';
+import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
 
 const meInboxNamespace: string = 'meInboxState';
 
 @Component({
   components: {
-    InboxConversationsList,
-    InboxChatBody,
+    // InboxConversationsList,
+    // InboxChatBody,
+    PulseLoader,
   },
 })
 export default class InboxLayout extends Vue {
-  @Action('fetchConversationPreviews', { namespace: meInboxNamespace })
-  public fetchConversationPreviews!: () => Promise<any>;
-  @Action('fetchConversation', { namespace: meInboxNamespace })
-  public fetchConversation!: (conversationId: number) => Promise<any>;
+  @Action('createChatSession', { namespace: meInboxNamespace })
+  public createChatSession!: () => Promise<any>;
 
+  public rocketChatUrl = process.env.VUE_APP_ROCKET_CHAT_URL;
+  public iframeInitialized = false;
+  public contentWindow!: Window | null;
 
-  public created() {
-    this.fetchConversationPreviews();
+  public mounted() {
+    this.contentWindow = (this.$refs.iframe as HTMLIFrameElement).contentWindow;
   }
 
-  public fetchConversationDetails(conversationId: number) {
-    this.fetchConversation(conversationId);
+  public afterChatLoaded() {
+    // (this.$refs.iframe as HTMLIFrameElement).height = (document.documentElement.clientHeight - 77).toString();
+    this.loginToChat();
+    this.iframeInitialized = true;
+  }
+
+  public logoutFromChat() {
+  
+    if (this.contentWindow) {
+      this.contentWindow.postMessage({
+        externalCommand: 'logout',
+      }, '*');
+    }
+  }
+
+  public loginToChat() {
+    this.logoutFromChat();
+    this.createChatSession().then((authToken: {authToken: string}) => {
+      if (this.contentWindow) {
+        this.contentWindow.postMessage({
+        externalCommand: 'login-with-token',
+        token: authToken.authToken,
+      }, '*');
+      }
+      
+    }).catch((error) => {
+      alert('An error occured with the chat: ' + error.message);
+    });
   }
 }
 </script>
 
 
 <style lang="scss">
-.row.row-broken {
-  padding-bottom: 0;
-}
-.col-inside-lg {
-  padding: 20px;
+.inbox-layout {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
 }
 .chat {
-  height: calc(100vh - 180px);
-  text-align: left;
-}
-.decor-default {
-  background-color: #ffffff;
-}
-.chat-users h6 {
-  font-size: 20px;
-  margin: 0 0 20px;
-}
-.chat-users .user {
-  position: relative;
-  padding: 0 0 0 50px;
-  display: block;
-  cursor: pointer;
-  margin: 0 0 20px;
-}
-.chat-users .user .avatar {
-  top: 0;
-  left: 0;
-}
-.chat .avatar {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-}
-.chat .avatar img {
-  display: block;
-  border-radius: 20px;
-  height: 100%;
-}
-.chat .avatar .status.off {
-  border: 1px solid #5a5a5a;
-  background: #ffffff;
-}
-.chat .avatar .status.online {
-  background: #4caf50;
-}
-.chat .avatar .status.busy {
-  background: #ffc107;
-}
-.chat .avatar .status.offline {
-  background: #ed4e6e;
-}
-.chat-users .user .status {
-  bottom: 0;
-  left: 28px;
-}
-.chat .avatar .status {
-  width: 10px;
-  height: 10px;
-  border-radius: 5px;
-  position: absolute;
-}
-.chat-users .user .name {
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 20px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.chat-users .user .mood {
-  font: 200 14px/20px "Raleway", sans-serif;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/*****************CHAT BODY *******************/
-.chat-body h6 {
-  font-size: 20px;
-  margin: 0 0 20px;
-}
-.chat-body .answer.left {
-  padding: 0 0 0 58px;
-  text-align: left;
-  float: left;
-}
-.chat-body .answer {
-  position: relative;
-  max-width: 600px;
-  overflow: hidden;
-  clear: both;
-}
-.chat-body .answer.left .avatar {
-  left: 0;
-}
-.chat-body .answer .avatar {
-  bottom: 36px;
-}
-.chat .avatar {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-}
-.chat .avatar img {
-  display: block;
-  border-radius: 20px;
-  height: 100%;
-}
-.chat-body .answer .name {
-  font-size: 14px;
-  line-height: 36px;
-}
-.chat-body .answer.left .avatar .status {
-  right: 4px;
-}
-.chat-body .answer .avatar .status {
-  bottom: 0;
-}
-.chat-body .answer.left .text {
-  background: #ebebeb;
-  color: #333333;
-  border-radius: 8px 8px 8px 0;
-}
-.chat-body .answer .text {
-  padding: 12px;
-  font-size: 16px;
-  line-height: 26px;
-  position: relative;
-}
-.chat-body .answer.left .text:before {
-  left: -30px;
-  border-right-color: #ebebeb;
-  border-right-width: 12px;
-}
-.chat-body .answer .text:before {
-  content: "";
-  display: block;
-  position: absolute;
-  bottom: 0;
-  border: 18px solid transparent;
-  border-bottom-width: 0;
-}
-.chat-body .answer.left .time {
-  padding-left: 12px;
-  color: #333333;
-}
-.chat-body .answer .time {
-  font-size: 16px;
-  line-height: 36px;
-  position: relative;
-  padding-bottom: 1px;
-}
-/*RIGHT*/
-.chat-body .answer.right {
-  padding: 0 58px 0 0;
-  text-align: right;
-  float: right;
-}
-
-.chat-body .answer.right .avatar {
-  right: 0;
-}
-.chat-body .answer.right .avatar .status {
-  left: 4px;
-}
-.chat-body .answer.right .text {
-  background: #7266ba;
-  color: #ffffff;
-  border-radius: 8px 8px 0 8px;
-}
-.chat-body .answer.right .text:before {
-  right: -30px;
-  border-left-color: #7266ba;
-  border-left-width: 12px;
-}
-.chat-body .answer.right .time {
-  padding-right: 12px;
-  color: #333333;
-}
-
-/**************ADD FORM ***************/
-.chat-body .answer-add {
-  clear: both;
-  position: relative;
-  margin: 20px -20px -20px;
-  padding: 20px;
-  background: #46be8a;
-}
-.chat-body .answer-add input {
-  border: none;
-  background: none;
-  display: block;
   width: 100%;
-  font-size: 16px;
-  line-height: 20px;
-  padding: 0;
-  color: #ffffff;
-}
-.chat input {
-  -webkit-appearance: none;
-  border-radius: 0;
-}
-.chat-body .answer-add .answer-btn-1 {
-  background: url("http://91.234.35.26/iwiki-admin/v1.0.0/admin/img/icon-40.png")
-    50% 50% no-repeat;
-  right: 56px;
-}
-.chat-body .answer-add .answer-btn {
-  display: block;
-  cursor: pointer;
-  width: 36px;
-  height: 36px;
-  position: absolute;
-  top: 50%;
-  margin-top: -18px;
-}
-.chat-body .answer-add .answer-btn-2 {
-  background: url("http://91.234.35.26/iwiki-admin/v1.0.0/admin/img/icon-41.png")
-    50% 50% no-repeat;
-  right: 20px;
-}
-.chat input::-webkit-input-placeholder {
-  color: #fff;
+  flex: 1 1 auto;
 }
 
-.chat input:-moz-placeholder {
-  /* Firefox 18- */
-  color: #fff;
+.row {
+  width: 100%;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+  margin: 0;
 }
+// .row.row-broken {
+//   padding-bottom: 0;
+// }
+// .col-inside-lg {
+//   padding: 20px;
+// }
+// .chat {
+//   height: calc(100vh - 180px);
+//   text-align: left;
+// }
+// .decor-default {
+//   background-color: #ffffff;
+// }
+// .chat-users h6 {
+//   font-size: 20px;
+//   margin: 0 0 20px;
+// }
+// .chat-users .user {
+//   position: relative;
+//   padding: 0 0 0 50px;
+//   display: block;
+//   cursor: pointer;
+//   margin: 0 0 20px;
+// }
+// .chat-users .user .avatar {
+//   top: 0;
+//   left: 0;
+// }
+// .chat .avatar {
+//   width: 40px;
+//   height: 40px;
+//   position: absolute;
+// }
+// .chat .avatar img {
+//   display: block;
+//   border-radius: 20px;
+//   height: 100%;
+// }
+// .chat .avatar .status.off {
+//   border: 1px solid #5a5a5a;
+//   background: #ffffff;
+// }
+// .chat .avatar .status.online {
+//   background: #4caf50;
+// }
+// .chat .avatar .status.busy {
+//   background: #ffc107;
+// }
+// .chat .avatar .status.offline {
+//   background: #ed4e6e;
+// }
+// .chat-users .user .status {
+//   bottom: 0;
+//   left: 28px;
+// }
+// .chat .avatar .status {
+//   width: 10px;
+//   height: 10px;
+//   border-radius: 5px;
+//   position: absolute;
+// }
+// .chat-users .user .name {
+//   font-size: 14px;
+//   font-weight: bold;
+//   line-height: 20px;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// }
+// .chat-users .user .mood {
+//   font: 200 14px/20px "Raleway", sans-serif;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// }
 
-.chat input::-moz-placeholder {
-  /* Firefox 19+ */
-  color: #fff;
-}
+// /*****************CHAT BODY *******************/
+// .chat-body h6 {
+//   font-size: 20px;
+//   margin: 0 0 20px;
+// }
+// .chat-body .answer.left {
+//   padding: 0 0 0 58px;
+//   text-align: left;
+//   float: left;
+// }
+// .chat-body .answer {
+//   position: relative;
+//   max-width: 600px;
+//   overflow: hidden;
+//   clear: both;
+// }
+// .chat-body .answer.left .avatar {
+//   left: 0;
+// }
+// .chat-body .answer .avatar {
+//   bottom: 36px;
+// }
+// .chat .avatar {
+//   width: 40px;
+//   height: 40px;
+//   position: absolute;
+// }
+// .chat .avatar img {
+//   display: block;
+//   border-radius: 20px;
+//   height: 100%;
+// }
+// .chat-body .answer .name {
+//   font-size: 14px;
+//   line-height: 36px;
+// }
+// .chat-body .answer.left .avatar .status {
+//   right: 4px;
+// }
+// .chat-body .answer .avatar .status {
+//   bottom: 0;
+// }
+// .chat-body .answer.left .text {
+//   background: #ebebeb;
+//   color: #333333;
+//   border-radius: 8px 8px 8px 0;
+// }
+// .chat-body .answer .text {
+//   padding: 12px;
+//   font-size: 16px;
+//   line-height: 26px;
+//   position: relative;
+// }
+// .chat-body .answer.left .text:before {
+//   left: -30px;
+//   border-right-color: #ebebeb;
+//   border-right-width: 12px;
+// }
+// .chat-body .answer .text:before {
+//   content: "";
+//   display: block;
+//   position: absolute;
+//   bottom: 0;
+//   border: 18px solid transparent;
+//   border-bottom-width: 0;
+// }
+// .chat-body .answer.left .time {
+//   padding-left: 12px;
+//   color: #333333;
+// }
+// .chat-body .answer .time {
+//   font-size: 16px;
+//   line-height: 36px;
+//   position: relative;
+//   padding-bottom: 1px;
+// }
+// /*RIGHT*/
+// .chat-body .answer.right {
+//   padding: 0 58px 0 0;
+//   text-align: right;
+//   float: right;
+// }
 
-.chat input:-ms-input-placeholder {
-  color: #fff;
-}
-.chat input {
-  -webkit-appearance: none;
-  border-radius: 0;
-}
+// .chat-body .answer.right .avatar {
+//   right: 0;
+// }
+// .chat-body .answer.right .avatar .status {
+//   left: 4px;
+// }
+// .chat-body .answer.right .text {
+//   background: #7266ba;
+//   color: #ffffff;
+//   border-radius: 8px 8px 0 8px;
+// }
+// .chat-body .answer.right .text:before {
+//   right: -30px;
+//   border-left-color: #7266ba;
+//   border-left-width: 12px;
+// }
+// .chat-body .answer.right .time {
+//   padding-right: 12px;
+//   color: #333333;
+// }
+
+// /**************ADD FORM ***************/
+// .chat-body .answer-add {
+//   clear: both;
+//   position: relative;
+//   margin: 20px -20px -20px;
+//   padding: 20px;
+//   background: #46be8a;
+// }
+// .chat-body .answer-add input {
+//   border: none;
+//   background: none;
+//   display: block;
+//   width: 100%;
+//   font-size: 16px;
+//   line-height: 20px;
+//   padding: 0;
+//   color: #ffffff;
+// }
+// .chat input {
+//   -webkit-appearance: none;
+//   border-radius: 0;
+// }
+// .chat-body .answer-add .answer-btn-1 {
+//   background: url("http://91.234.35.26/iwiki-admin/v1.0.0/admin/img/icon-40.png")
+//     50% 50% no-repeat;
+//   right: 56px;
+// }
+// .chat-body .answer-add .answer-btn {
+//   display: block;
+//   cursor: pointer;
+//   width: 36px;
+//   height: 36px;
+//   position: absolute;
+//   top: 50%;
+//   margin-top: -18px;
+// }
+// .chat-body .answer-add .answer-btn-2 {
+//   background: url("http://91.234.35.26/iwiki-admin/v1.0.0/admin/img/icon-41.png")
+//     50% 50% no-repeat;
+//   right: 20px;
+// }
+// .chat input::-webkit-input-placeholder {
+//   color: #fff;
+// }
+
+// .chat input:-moz-placeholder {
+//   /* Firefox 18- */
+//   color: #fff;
+// }
+
+// .chat input::-moz-placeholder {
+//   /* Firefox 19+ */
+//   color: #fff;
+// }
+
+// .chat input:-ms-input-placeholder {
+//   color: #fff;
+// }
+// .chat input {
+//   -webkit-appearance: none;
+//   border-radius: 0;
+// }
 </style>

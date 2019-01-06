@@ -39,9 +39,9 @@
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link class="nav-link link text-white display-4" to="/me/inbox">
+                <router-link class="nav-link link text-white display-4" to="/me/chat">
                   <span class="mbri-chat mbr-iconfont mbr-iconfont-btn"></span>
-                  Inbox
+                  Chat
                 </router-link>
               <li class="nav-item">
                 <a class="nav-link link text-white display-4" v-on:click="$auth.logout()">

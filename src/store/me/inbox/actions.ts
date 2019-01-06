@@ -1,10 +1,23 @@
 import { ActionTree } from 'vuex';
-import { MeInboxState } from './types';
+import { MeInboxState, Message } from './types';
 import { RootState } from '../../types';
 
 import ApiInterface from '@/services/api-interface.ts';
 
 export const actions: ActionTree<MeInboxState, RootState> = {
+
+  createChatSession(): Promise<any> {
+    const apiInterface = new ApiInterface();
+
+    return apiInterface.createChatSession().then((response: any) => {
+      const authToken = response.data.rocketChatAuthToken;
+      if (authToken) {
+        return authToken.data;
+      } else {
+        throw new Error(response.data.error);
+      }
+    });
+  },
 
   fetchConversationPreviews({ commit }): Promise<any> {
     const apiInterface = new ApiInterface();
@@ -47,10 +60,15 @@ export const actions: ActionTree<MeInboxState, RootState> = {
     return apiInterface.createMessage(params.conversationId, params.message)
       .then((response: any) => {
         const data = response.data;
-        if (data.success) {
-          commit('addMessageToConversation', data.message);
-        }
+        // We are adding the message in the websocket channel receive method (ChatBody.vue)
+        // if (data.success) {
+        //   commit('addMessageToConversation', data.message);
+        // }
         return data;
       });
+  },
+
+  addMessageToConversation({ commit }, message: Message) {
+    commit('addMessageToConversation', message);
   },
 };

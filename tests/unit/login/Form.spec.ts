@@ -131,7 +131,7 @@ describe('login/Form.vue', () => {
       setTimeout(() => {
         expect(onLoginErrorStub.calledOnce).to.be.true;
         done();
-      }, 100);
+      }, 300);
     });
   });
 

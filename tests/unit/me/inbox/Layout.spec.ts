@@ -10,7 +10,6 @@ import { meInboxState } from '@/store/me/inbox/index';
 
 import sinon from 'sinon';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -28,8 +27,7 @@ describe('me/inbox/Layout.vue', () => {
     };
 
     actions = {
-      fetchConversationPreviews: sinon.stub(),
-      fetchConversation: sinon.stub()
+      createChatSession: sinon.stub(),
     };
 
     store = new Vuex.Store({
@@ -44,53 +42,130 @@ describe('me/inbox/Layout.vue', () => {
     });
   });
 
-  it('should call the fetchConversationPreviews on creation', () => {
-    const wrapper = shallowMount(Layout, {
-      localVue,
-      store
-    });
-
-    expect(actions.fetchConversationPreviews.calledOnce).to.be.true;
-  });
-
-  it('should call the fetchConversationDetails when conversationList emit the correct event', () => {
-    const fetchConversationDetailsStub = sinon.stub();
-
+  it('should assign the afterChatLoaded function to the iframe onload hook', () => {
+    const afterChatLoaded = sinon.stub();
     const wrapper = shallowMount(Layout, {
       localVue,
       store,
       methods: {
-        fetchConversationDetails: fetchConversationDetailsStub,
+        afterChatLoaded,
       }
     });
+    const event = document.createEvent('Event');
+    event.initEvent('load', true, true); //can bubble, and is cancellable
 
-    wrapper.find(InboxConversationsList).vm.$emit('fetch-conversation-details', 1)
-
-    expect(fetchConversationDetailsStub.calledOnceWith(1)).to.be.true;
+    (wrapper.vm.$refs.iframe as HTMLIFrameElement).dispatchEvent(event);
+    expect(afterChatLoaded.called).to.be.true;
   });
 
+  describe('#afterChatLoaded', () => {
+    it('should call the right methods', () => {
+      const loginToChat = sinon.stub();
+      const wrapper = shallowMount(Layout, {
+        localVue,
+        store,
+        methods: {
+          loginToChat,
+        },
+      });
+      
+      wrapper.vm.afterChatLoaded();
+      expect(loginToChat.calledOnce).to.be.true;
+      expect(wrapper.vm.iframeInitialized).to.be.true;
+     });
+  });
 
-  it('should call the right method when calling the fetchConversationDetails method', () => {
+  describe('#loginToChat', () => {
+    context('createChatSession is successfull', () => {
+
+      it('should call the right methods', (done) => {
+        const logoutFromChat = sinon.stub();
+        const contentWindow = {
+          postMessage: () => {}
+        };
+        const contentWindowMock = sinon.mock(contentWindow);
+        const wrapper = shallowMount(Layout, {
+          localVue,
+          store,
+          methods: {
+            logoutFromChat,
+          },
+        });
+        actions.createChatSession.resolves({authToken: 'token'});
+        wrapper.setData({contentWindow});
+
+        contentWindowMock.expects("postMessage").once().withArgs({
+          externalCommand: 'login-with-token',
+          token: 'token',
+        }, '*');
+
+        wrapper.vm.loginToChat();
+        expect(logoutFromChat.calledOnce).to.be.true;
+        expect(actions.createChatSession.calledOnce).to.be.true;
+
+        wrapper.vm.$nextTick(() => {
+          contentWindowMock.verify();
+          done();
+        });
+      });
+    });
+
+    context('createChatSession fails', () => {
+
+      it('should call the right methods', (done) => {
+        const logoutFromChat = sinon.stub();
+        const contentWindow = {
+          postMessage: () => {}
+        };
+        window.alert = sinon.spy();
+        const contentWindowMock = sinon.mock(contentWindow);
+
+        const wrapper = shallowMount(Layout, {
+          localVue,
+          store,
+          methods: {
+            logoutFromChat,
+          },
+        });
+        actions.createChatSession.rejects(function() { return new Error('errorMsg'); });
+        wrapper.setData({contentWindow});
+
+        contentWindowMock.expects("postMessage").never();
+
+        wrapper.vm.loginToChat();
+        expect(logoutFromChat.calledOnce).to.be.true;
+        expect(actions.createChatSession.calledOnce).to.be.true;
+
+        wrapper.vm.$nextTick(() => {
+          contentWindowMock.verify();
+          done();
+        });
+      });
+    });
+  });
+
+  describe('#logoutFromChat', () => {
+   
+   it('should call the fetchConversationPreviews on creation', () => {
+    const contentWindow = {
+      postMessage: () => {}
+    };
+    const contentWindowMock = sinon.mock(contentWindow);
 
     const wrapper = shallowMount(Layout, {
       localVue,
       store,
     });
 
-    wrapper.vm.fetchConversationDetails(1);
+    wrapper.setData({contentWindow});
+    contentWindowMock.expects("postMessage").once().withArgs({
+      externalCommand: 'logout',
+    }, '*');
 
-    expect(actions.fetchConversation.calledOnce).to.be.true;
-    expect(actions.fetchConversation.getCall(0).args[1]).to.equal(1);
-  });
+    wrapper.vm.logoutFromChat();
 
-  it('should have the correct child components', () => {
+    contentWindowMock.verify();
+   });
 
-    const wrapper = shallowMount(Layout, {
-      localVue,
-      store,
-    });
-
-    expect(wrapper.findAll(InboxConversationsList)).to.have.lengthOf(1);
-    expect(wrapper.findAll(InboxChatBody)).to.have.lengthOf(1);
   });
 });
