@@ -1,20 +1,13 @@
 <template>
-  <div class="users-list">
-    <section class="features16 cid-r2OLVt8pPE" id="features16-q">
-      <pulse-loader :loading="isFetching"></pulse-loader>
-      <div class="container align-center" v-if="!isFetching">
-        <div class="errors">
-          <div class="error" v-for="error in errors" :key="error">{{ error }}</div>
-        </div>
+  
+  <v-container fluid grid-list-md pa-0>
+    <v-layout row wrap justify-center>
+      <v-flex v-for="user in users" :key="user.id" v-bind="{ ['xs4']: true }">
+        <PreviewCard :userPreview="user"/>
+      </v-flex>
+    </v-layout>
+  </v-container>
 
-        <h3 class="pb-5 mbr-section-subtitle mbr-fonts-style mbr-light display-1">Users</h3>
-
-        <div v-for="(users, index) in chunkedUsers" :key="index" class="row media-row">
-          <PreviewCard v-for="user in users" :key="user.id" :userPreview="user"/>
-        </div>
-      </div>
-    </section>
-  </div>
 </template>
 
 <script lang="ts">
@@ -34,23 +27,23 @@ const usersNamespace: string = 'usersState';
   },
 })
 export default class UsersList extends Vue {
-  public errors: string[] = [];
+  public formErrors: string[] = [];
 
   public color = '#3AB982';
   public margin = '10px';
   public radius = '10px';
   public size = '15px';
 
-  @Getter('getChunkedUsers', { namespace: usersNamespace })
-  public chunkedUsers!: UserPreview[][];
-  @Getter('isFetching', { namespace: usersNamespace }) public isFetching!: boolean;
-  @Action('fetchData', { namespace: usersNamespace }) public fetchData!: () => Promise<
-    any
-  >;
+  @Getter('getUsers', { namespace: usersNamespace })
+  public users!: UserPreview[];
+  @Getter('isFetching', { namespace: usersNamespace })
+  public isFetching!: boolean;
+  @Action('fetchData', { namespace: usersNamespace })
+  public fetchData!: () => Promise<any>;
 
   public created() {
     this.fetchData().catch((error: any) => {
-      this.errors.push(
+      this.formErrors.push(
         error.message || 'An error occured, please try again later.',
       );
     });

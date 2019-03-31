@@ -8,7 +8,6 @@ import { Podcast } from '@/store/news-feed/types';
 import moment from 'moment';
 
 describe('widgets/news-feed/PodcastViewer.vue', () => {
-
   const podcast: Podcast = {
     title: 'Title',
     description: 'Description',
@@ -25,24 +24,32 @@ describe('widgets/news-feed/PodcastViewer.vue', () => {
       const wrapper = shallowMount(PodcastViewer, {
         propsData: {
           podcast,
-        }}
-      );
+        },
+      });
 
-      expect(wrapper.vm.formattedPublishingDate).to.equal(podcast.publishingDate.format('LLLL'));
+      expect(wrapper.vm.formattedPublishingDate).to.equal(
+        podcast.publishingDate.format('LLLL'),
+      );
     });
 
     it('should contain the podcast informations in the page', () => {
       const wrapper = mount(PodcastViewer, {
         propsData: {
           podcast,
-        }}
+        },
+      });
+      expect(wrapper.find('b-card').attributes('title')).to.equal(
+        podcast.title,
       );
-      expect(wrapper.find('b-card').attributes('title')).to.equal(podcast.title);
-      expect(wrapper.find('b-card').attributes('img-src')).to.equal(podcast.thumbnailUrl);
-      expect(wrapper.find('.publishing-date-wrapper').text()).to.equal(wrapper.vm.formattedPublishingDate);
-      expect(wrapper.find('audio source').attributes('src')).to.equal(podcast.contentUrl);
+      expect(wrapper.find('b-card').attributes('img-src')).to.equal(
+        podcast.thumbnailUrl,
+      );
+      expect(wrapper.find('.publishing-date-wrapper').text()).to.equal(
+        wrapper.vm.formattedPublishingDate,
+      );
+      expect(wrapper.find('audio source').attributes('src')).to.equal(
+        podcast.contentUrl,
+      );
     });
-
   });
-
 });

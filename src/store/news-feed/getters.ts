@@ -12,4 +12,12 @@ export const getters: GetterTree<NewsFeedState, RootState> = {
     const { fetching } = state;
     return fetching;
   },
+  isFetchingGhostPosts(state) {
+    const { fetchingGhostPosts } = state;
+    return fetchingGhostPosts;
+  },
+  getGhostPosts(state) {
+    const { ghostPosts } = state;
+    return ghostPosts;
+  },
 };

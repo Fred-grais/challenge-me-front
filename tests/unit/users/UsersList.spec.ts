@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import Vuex from 'vuex';
-import { shallowMount, createLocalVue, RouterLinkStub  } from '@vue/test-utils';
+import { shallowMount, createLocalVue, RouterLinkStub } from '@vue/test-utils';
 import UsersList from '@/components/users/UsersList.vue';
 import PreviewCard from '@/components/user/PreviewCard.vue';
 import { UserPreview, UsersState } from '@/store/users/types';
-import {usersState } from '@/store/users/index';
+import { usersState } from '@/store/users/index';
 import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
 
 import sinon from 'sinon';
@@ -13,7 +13,6 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('users/UsersList.vue', () => {
-
   let actions: any;
   let state: UsersState;
   let store: any;
@@ -21,25 +20,29 @@ describe('users/UsersList.vue', () => {
 
   let fetchDataStub: any;
 
-  const users: UserPreview[] = [{
-    id: 1,
-    firstName: 'Fred',
-    lastName: 'Grauis',
-    position: 'CEO',
-  },
-  {
-    id: 2,
-    firstName: 'Fred2',
-    lastName: 'Grauis2',
-    position: 'CEO',
-  }];
+  const users: UserPreview[] = [
+    {
+      id: 1,
+      firstName: 'Fred',
+      lastName: 'Grauis',
+      position: 'CEO',
+      avatarUrl: 'avatarUrl',
+    },
+    {
+      id: 2,
+      firstName: 'Fred2',
+      lastName: 'Grauis2',
+      position: 'CEO',
+      avatarUrl: 'avatarUrl',
+    },
+  ];
 
   const fetching = false;
 
   beforeEach(() => {
     state = {
       users,
-      fetching
+      fetching,
     };
 
     fetchDataStub = sinon.stub();
@@ -55,11 +58,11 @@ describe('users/UsersList.vue', () => {
           namespaced: true,
           state,
           actions,
-          getters
-        }
-      }
+          getters,
+        },
+      },
     });
-  })
+  });
 
   it('should call the fetchData method on creation', () => {
     const wrapper = shallowMount(UsersList, {
@@ -91,17 +94,18 @@ describe('users/UsersList.vue', () => {
     });
 
     const previewCards: any = wrapper.findAll(PreviewCard);
-    expect(previewCards).to.have.lengthOf(2);;
+    expect(previewCards).to.have.lengthOf(2);
 
-    previewCards.wrappers.forEach((wrapper: any, i: any) => { //
-      expect(wrapper.props().userPreview).to.equal(users[i]) //
-    })
+    previewCards.wrappers.forEach((wrapper: any, i: any) => {
+      //
+      expect(wrapper.props().userPreview).to.equal(users[i]); //
+    });
   });
 
   it('should render errors if any', (done) => {
     const errorMessage = 'An error occurred';
 
-    fetchDataStub.rejects({message: errorMessage});
+    fetchDataStub.rejects({ message: errorMessage });
 
     const wrapper = shallowMount(UsersList, {
       localVue,
@@ -115,7 +119,7 @@ describe('users/UsersList.vue', () => {
   });
 
   it('should render a default error message if no error message returned from API', (done) => {
-    fetchDataStub.rejects({message: ''});
+    fetchDataStub.rejects({ message: '' });
 
     const wrapper = shallowMount(UsersList, {
       localVue,
@@ -123,9 +127,10 @@ describe('users/UsersList.vue', () => {
     });
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.errors').text()).to.equal('An error occured, please try again later.');
+      expect(wrapper.find('.errors').text()).to.equal(
+        'An error occured, please try again later.',
+      );
       done();
     });
   });
-
 });

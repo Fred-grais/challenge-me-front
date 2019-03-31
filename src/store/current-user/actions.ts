@@ -10,7 +10,8 @@ export const actions: ActionTree<CurrentUserState, RootState> = {
 
     const apiInterface = new ApiInterface();
 
-    return apiInterface.getUser(userId)
+    return apiInterface
+      .getUser(userId)
       .then((response: any) => {
         commit('setCurrentUser', response.data);
         commit('setFetching', false);

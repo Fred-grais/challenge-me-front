@@ -15,7 +15,6 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('widgets/news-feed/MainPodcastViewer.vue', () => {
-
   let actions: any;
   let state: any;
   let store: any;
@@ -49,7 +48,7 @@ describe('widgets/news-feed/MainPodcastViewer.vue', () => {
 
     getters = {
       getMainPodcast: getMainPodcastStub,
-    }
+    };
 
     getters = newsFeedState.getters;
 
@@ -59,11 +58,11 @@ describe('widgets/news-feed/MainPodcastViewer.vue', () => {
           namespaced: true,
           state,
           actions,
-          getters: getters
-        }
-      }
+          getters: getters,
+        },
+      },
     });
-  })
+  });
 
   it('should call the fetchMainPodcast action on creation', () => {
     const stub = sinon.stub();
@@ -76,16 +75,14 @@ describe('widgets/news-feed/MainPodcastViewer.vue', () => {
   });
 
   it('should have a PodcastViewer child and pass it the correct props', () => {
-    const $route = { path: '/', params: {id: 1} };
+    const $route = { path: '/', params: { id: 1 } };
 
     const wrapper = shallowMount(MainPodcastViewer, {
       localVue,
-      store
+      store,
     });
 
     expect(wrapper.findAll(PodcastViewer)).to.have.lengthOf(1);
     expect(wrapper.find(PodcastViewer).props().podcast).to.deep.equal(podcast);
   });
-
-
 });

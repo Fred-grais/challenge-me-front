@@ -9,14 +9,25 @@ import moment from 'moment';
 
 export const mutations: MutationTree<MeProjectState> = {
   setProject(state, project: Project) {
-    project.timeline.items = sortBy(project.timeline.items, [(item: ITimelineItem) => {
-      item.date = moment(item.date);
-      return item.date.valueOf();
-    }]);
+    project.timeline.items = sortBy(
+      project.timeline.items,
+      (item: ITimelineItem) => {
+        item.date = moment(item.date);
+        return item.date.valueOf();
+      },
+    );
 
     state.project = project;
   },
   setFetching(state, isFetching: boolean) {
     state.fetching = isFetching;
+  },
+  setProjectLogo(state, logoUrl: string) {
+    const { project } = state;
+    project!.logoUrl = logoUrl;
+  },
+  setProjectPictures(state, picturesUrls: string[]) {
+    const { project } = state;
+    project!.picturesUrls = picturesUrls;
   },
 };

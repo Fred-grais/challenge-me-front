@@ -1,10 +1,14 @@
 import { MutationTree } from 'vuex';
-import { MeInboxState, ConversationPreview, Conversation, Message } from './types';
+import {
+  MeInboxState,
+  ConversationPreview,
+  Conversation,
+  Message,
+} from './types';
 import each from 'lodash/each';
 import moment from 'moment';
 
 export const mutations: MutationTree<MeInboxState> = {
-
   setPreviewConversations(state, conversationPreviews: ConversationPreview[]) {
     state.conversationPreviews = conversationPreviews;
   },

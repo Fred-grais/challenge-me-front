@@ -6,16 +6,16 @@ import { CurrentProjectState } from './types';
 import { RootState } from '../types';
 
 export const state: CurrentProjectState = {
-    currentProject: undefined,
-    fetching: false,
+  currentProject: undefined,
+  fetching: false,
 };
 
 const namespaced: boolean = true;
 
 export const currentProjectState: Module<CurrentProjectState, RootState> = {
-    namespaced,
-    state,
-    getters,
-    actions,
-    mutations,
+  namespaced,
+  state,
+  getters,
+  actions,
+  mutations,
 };

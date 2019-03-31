@@ -1,5 +1,41 @@
 <template>
-  <div class="register">
+  <v-container fluid grid-list-lg>
+    <v-layout row wrap justify-center>
+      <v-flex xs5>
+        <v-card>
+          <v-container fluid grid-list-lg>
+            <v-alert :value="true" type="error" v-if="formErrors.length > 0">Some errors occurred:
+              <ul>
+                <li v-for="(error, i) in formErrors" :key="i">{{ error }}</li>
+              </ul>
+            </v-alert>
+            <form>
+              <v-text-field
+                v-model="email"
+                v-validate="validations.email"
+                :error-messages="veeErrors.collect('email')"
+                label="Email"
+                data-vv-name="email"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="password"
+                v-validate="validations.password"
+                :error-messages="veeErrors.collect('password')"
+                label="Password"
+                data-vv-name="password"
+                required
+              ></v-text-field>
+
+              <v-btn @click="signUp" color="primary">Sign up</v-btn>
+            </form>
+          </v-container>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+  <!-- <div class="register">
     <section class="mbr-section content5 cid-r3amUe0ElS mbr-parallax-background" id="content5-t">
 
         <div class="container">
@@ -13,7 +49,7 @@
     <br/>
     <br/>
     <div class="errors">
-      <div class="error" v-for="error in errors" :key="error">
+      <div class="error" v-for="error in formErrors" :key="error">
         {{error}}
       </div>
     </div>
@@ -42,7 +78,6 @@
 
                           <span class="input-group-btn">
                               <button type="button" class="btn btn-secondary btn-form display-4 submit-button register-button" @click="signUp()">Sign up</button>
-                              <!-- <button href="" type="submit" class="btn btn-secondary btn-form display-4">SEND FORM</button> -->
                           </span>
                       </form>
                   </div>
@@ -51,17 +86,7 @@
           </div>
         </div>
     </section>
-    <br/>
-    <br/>
-    <!-- <form>
-      <input type="email" placeholder="email" v-model="email" />
-      <br/>
-      <input type="password" placeholder="password"  v-model="password" />
-      <br/>
-      <button class="register-button" type="button" @click="signUp()">Sign up</button>
-
-    </form> -->
-  </div>
+  </div>-->
 </template>
 
 <script lang="ts">
@@ -72,39 +97,59 @@ export default class Form extends Vue {
   public email: string = '';
   public password: string = '';
 
-  public errors: string[] = [];
+  public formErrors: string[] = [];
+
+  public validations = {
+    email: {
+      required: true,
+      email: true,
+    },
+    password: {
+      required: true,
+    },
+  };
 
   public onRegisterError(res: any): void {
     if (res.response) {
       if (res.response.status === 422) {
         const errors = res.response.data.errors;
         if (errors) {
-          this.errors = errors.full_messages;
+          this.formErrors = errors.full_messages;
         }
       } else if (res.response.status === 500) {
-        this.errors.push('Cannot process your request right now, please try again later.');
+        this.formErrors.push(
+          'Cannot process your request right now, please try again later.',
+        );
       } else {
-        this.errors.push('An unexpected error happened, please try again later.');
+        this.formErrors.push(
+          'An unexpected error happened, please try again later.',
+        );
       }
     } else {
-      this.errors.push('The server seems unresponsive, please try again later.');
+      this.formErrors.push(
+        'The server seems unresponsive, please try again later.',
+      );
     }
   }
 
   private signUp(): void {
-    this.errors = [];
+    this.formErrors = [];
 
-    this.$auth.register({
-      params: {
-        email: this.email,
-        password: this.password,
-      }, // data: {} in Axios
-      // tslint:disable-next-line:no-empty
-      success() {},
-      error: this.onRegisterError,
-      autoLogin: true,
-      rememberMe: true,
-      redirect: {name: 'me'},
+    this.$validator.validateAll().then((valid) => {
+      if (valid) {
+        this.$auth.register({
+          params: {
+            email: this.email,
+            password: this.password,
+          }, // data: {} in Axios
+          // tslint:disable-next-line:no-empty
+          success() {},
+          error: this.onRegisterError,
+          autoLogin: true,
+          rememberMe: true,
+          redirect: { name: 'me' },
+        });
+      }
     });
   }
 }

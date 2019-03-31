@@ -1,6 +1,7 @@
 import { Moment } from 'moment';
 
 export interface ITimelineItem {
+  internalId: string;
   title: string;
   date: Moment;
   description: string;

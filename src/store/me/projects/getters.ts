@@ -11,11 +11,6 @@ export const getters: GetterTree<MeProjectsState, RootState> = {
 
     return projects;
   },
-  getChunkedProjects(state, mGetters) {
-    const projects = mGetters.getProjects;
-
-    return chunk(projects, 3);
-  },
   isFetching(state) {
     const { fetching } = state;
     return fetching;

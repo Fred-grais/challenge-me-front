@@ -1,5 +1,23 @@
 <template>
-  <b-card
+  <v-card>
+    <v-img :src="podcast.thumbnailUrl" aspect-ratio="2.75"></v-img>
+
+    <v-card-title primary-title>
+      <div>
+        <h3 class="headline mb-0">{{ podcast.title }}</h3>
+        <p class="publishing-date-wrapper">{{formattedPublishingDate}}</p>
+        <div v-html="podcast.description">{{ podcast.description }}</div>
+      </div>
+    </v-card-title>
+
+    <v-card-actions text-xs-center>
+      <audio controls>
+        <source :src="podcast.contentUrl" type="audio/mp3">Your browser does not support the audio tag.
+      </audio>
+    </v-card-actions>
+  </v-card>
+
+  <!-- <b-card
     v-if="podcast"
     :title="podcast.title"
     :img-src="podcast.thumbnailUrl"
@@ -14,7 +32,7 @@
     <audio controls>
       <source :src="podcast.contentUrl" type="audio/mp3">Your browser does not support the audio tag.
     </audio>
-  </b-card>
+  </b-card>-->
 </template>
 
 <script lang="ts">
@@ -32,4 +50,7 @@ export default class PodcastViewer extends Vue {
 </script>
 
 <style lang="scss" scoped>
+audio {
+  margin: auto;
+}
 </style>

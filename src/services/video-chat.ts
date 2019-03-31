@@ -2,7 +2,12 @@ import Peer from 'peerjs';
 import * as _ from 'lodash';
 
 class VideoChat {
-  public peer: Peer = new Peer({ host: 'peerjsbackend.herokuapp.com', port: 443, secure: true, debug: 3 });
+  public peer: Peer = new Peer({
+    host: 'peerjsbackend.herokuapp.com',
+    port: 443,
+    secure: true,
+    debug: 3,
+  });
   public localStream: MediaStream | null = null;
   public currentCall: Peer.MediaConnection | null = null;
 
@@ -28,7 +33,8 @@ class VideoChat {
   }
 
   private acquireUserMedia(): Promise<any> {
-    return navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+    return navigator.mediaDevices
+      .getUserMedia({ audio: true, video: true })
       .then((mediaStream: MediaStream) => {
         // tslint:disable-next-line:no-console
         console.log('mediaStream...');

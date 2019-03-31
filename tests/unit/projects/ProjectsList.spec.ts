@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import Vuex from 'vuex';
-import { shallowMount, createLocalVue, RouterLinkStub  } from '@vue/test-utils';
+import { shallowMount, createLocalVue, RouterLinkStub } from '@vue/test-utils';
 import ProjectsList from '@/components/projects/ProjectsList.vue';
 import PreviewCard from '@/components/project/PreviewCard.vue';
 import { ProjectPreview, ProjectsState } from '@/store/projects/types';
@@ -13,40 +13,43 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('projects/ProjectsList.vue', () => {
-
   let actions: any;
   let state: ProjectsState;
   let store: any;
 
   let fetchDataStub: any;
 
-  const projects: ProjectPreview[] = [{
-    id: 1,
-    name: 'Name',
-    ownerPreview: {
+  const projects: ProjectPreview[] = [
+    {
       id: 1,
-      firstName: 'Fred',
-      lastName: 'Grauis',
-      position: 'CEO',
+      name: 'Name',
+      ownerPreview: {
+        id: 1,
+        firstName: 'Fred',
+        lastName: 'Grauis',
+        position: 'CEO',
+        avatarUrl: 'avatarUrl',
+      },
     },
-  },
-  {
-    id: 2,
-    name: 'Name2',
-    ownerPreview: {
+    {
       id: 2,
-      firstName: 'Fred2',
-      lastName: 'Grauis2',
-      position: 'CEO',
+      name: 'Name2',
+      ownerPreview: {
+        id: 2,
+        firstName: 'Fred2',
+        lastName: 'Grauis2',
+        position: 'CEO',
+        avatarUrl: 'avatarUrl',
+      },
     },
-  }];
+  ];
 
   const fetching = false;
 
   beforeEach(() => {
     state = {
       projects,
-      fetching
+      fetching,
     };
 
     fetchDataStub = sinon.stub();
@@ -60,11 +63,11 @@ describe('projects/ProjectsList.vue', () => {
           namespaced: true,
           state,
           actions,
-          getters: projectsState.getters
-        }
-      }
+          getters: projectsState.getters,
+        },
+      },
     });
-  })
+  });
 
   it('should call the fetchData method on creation', () => {
     const wrapper = shallowMount(ProjectsList, {
@@ -97,17 +100,18 @@ describe('projects/ProjectsList.vue', () => {
     });
 
     const previewCards: any = wrapper.findAll(PreviewCard);
-    expect(previewCards).to.have.lengthOf(2);;
+    expect(previewCards).to.have.lengthOf(2);
 
-    previewCards.wrappers.forEach((wrapper: any, i: any) => { //
-      expect(wrapper.props().projectPreview).to.equal(projects[i]) //
-    })
+    previewCards.wrappers.forEach((wrapper: any, i: any) => {
+      //
+      expect(wrapper.props().projectPreview).to.equal(projects[i]); //
+    });
   });
 
   it('should render errors if any', (done) => {
     const errorMessage = 'An error occurred';
 
-    fetchDataStub.rejects({message: errorMessage});
+    fetchDataStub.rejects({ message: errorMessage });
 
     const wrapper = shallowMount(ProjectsList, {
       localVue,
@@ -121,7 +125,7 @@ describe('projects/ProjectsList.vue', () => {
   });
 
   it('should render a default error message if no error message returned from API', (done) => {
-    fetchDataStub.rejects({message: ''});
+    fetchDataStub.rejects({ message: '' });
 
     const wrapper = shallowMount(ProjectsList, {
       localVue,
@@ -129,7 +133,9 @@ describe('projects/ProjectsList.vue', () => {
     });
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.errors').text()).to.equal('An error occured, please try again later.');
+      expect(wrapper.find('.errors').text()).to.equal(
+        'An error occured, please try again later.',
+      );
       done();
     });
   });

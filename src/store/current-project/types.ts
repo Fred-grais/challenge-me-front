@@ -1,3 +1,4 @@
+import { RocketChatProfile } from '@/store/current-user/types';
 import { User } from '@/store/current-user/types';
 import { ITimeline } from '@/store/common/types';
 
@@ -9,6 +10,9 @@ export interface Project {
   challengesNeededList: string[];
   timeline: ITimeline;
   ownerFull: User;
+  rocketChatProfile: RocketChatProfile;
+  logoUrl: string;
+  picturesUrls: string[];
 }
 
 export interface CurrentProjectState {

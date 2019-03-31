@@ -1,8 +1,9 @@
 <template>
-  <div class="main-podcast-viewer">
-    <h2>Podcast of the day</h2>
-    <PodcastViewer class="main-podcast" :podcast="mainPodcast"/>
-  </div>
+  <v-layout column justify-center fill-height pa-5 class="main-podcast-viewer" v-if="mainPodcast">
+    <v-flex text-xs-center xs12>
+      <PodcastViewer class="main-podcast" :podcast="mainPodcast"/>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">

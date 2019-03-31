@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import Vuex from 'vuex'
+import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Profile from '@/components/me/Profile.vue';
 import { Me } from '@/store/me/types';
@@ -16,11 +16,17 @@ describe('Me/Profile.vue', () => {
   let store: any;
 
   const me: Me = {
+    avatarUrl: '123',
     id: 1,
     email: 'email@email.com',
     firstName: 'Fred',
     lastName: 'Dupond',
-    position: "CEO"
+    position: 'CEO',
+    status: 'active',
+    twitterId: 'twitterId',
+    mobile: '123',
+    rocketChatProfile: { name: 'rocketchat_username' },
+    timeline: { items: [] },
   };
 
   const firstNameInputSelector = 'input[name="firstName"]';
@@ -34,7 +40,7 @@ describe('Me/Profile.vue', () => {
     };
 
     actions = {
-      updateMe: sinon.stub()
+      updateMe: sinon.stub(),
     };
 
     store = new Vuex.Store({
@@ -43,11 +49,11 @@ describe('Me/Profile.vue', () => {
           namespaced: true,
           state,
           actions,
-          getters: meState.getters
-        }
-      }
+          getters: meState.getters,
+        },
+      },
     });
-  })
+  });
 
   it('should have inputs to update the user informations', () => {
     const wrapper = shallowMount(Profile, { store, localVue });
@@ -58,9 +64,15 @@ describe('Me/Profile.vue', () => {
 
   it('should display the user informations', () => {
     const wrapper = shallowMount(Profile, { store, localVue });
-    expect((<HTMLInputElement>wrapper.find(firstNameInputSelector).element).value).to.equal(me.firstName);
-    expect((<HTMLInputElement>wrapper.find(lastNameInputSelector).element).value).to.equal(me.lastName);
-    expect((<HTMLInputElement>wrapper.find(positionInputSelector).element).value).to.equal(me.position);;
+    expect(
+      (<HTMLInputElement>wrapper.find(firstNameInputSelector).element).value,
+    ).to.equal(me.firstName);
+    expect(
+      (<HTMLInputElement>wrapper.find(lastNameInputSelector).element).value,
+    ).to.equal(me.lastName);
+    expect(
+      (<HTMLInputElement>wrapper.find(positionInputSelector).element).value,
+    ).to.equal(me.position);
   });
 
   it('should call the correct method when the save button is pressed', () => {
@@ -71,6 +83,4 @@ describe('Me/Profile.vue', () => {
     expect(actions.updateMe.getCall(0).args[1].lastName).to.equal('Dupond');
     expect(actions.updateMe.getCall(0).args[1].position).to.equal('CEO');
   });
-
-
 });

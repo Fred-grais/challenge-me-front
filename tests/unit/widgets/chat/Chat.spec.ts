@@ -1,10 +1,8 @@
 import { expect } from 'chai';
-import Vuex from 'vuex'
+import Vuex from 'vuex';
 
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
-import Layout from '@/components/me/inbox/Layout.vue';
-import InboxConversationsList from '@/components/me/inbox/components/ConversationsList.vue';
-import InboxChatBody from '@/components/me/inbox/components/ChatBody.vue';
+import Chat from '@/components/widgets/chat/Chat.vue';
 
 import { meInboxState } from '@/store/me/inbox/index';
 
@@ -13,8 +11,7 @@ import sinon from 'sinon';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe('me/inbox/Layout.vue', () => {
-
+describe.only('widgets/chat/Chat.vue', () => {
   let actions: any;
   let store: any;
   let state: any;
@@ -36,20 +33,20 @@ describe('me/inbox/Layout.vue', () => {
           namespaced: true,
           state,
           actions,
-          getters: meInboxState.getters
-        }
-      }
+          getters: meInboxState.getters,
+        },
+      },
     });
   });
 
   it('should assign the afterChatLoaded function to the iframe onload hook', () => {
     const afterChatLoaded = sinon.stub();
-    const wrapper = shallowMount(Layout, {
+    const wrapper = shallowMount(Chat, {
       localVue,
       store,
       methods: {
         afterChatLoaded,
-      }
+      },
     });
     const event = document.createEvent('Event');
     event.initEvent('load', true, true); //can bubble, and is cancellable
@@ -61,43 +58,48 @@ describe('me/inbox/Layout.vue', () => {
   describe('#afterChatLoaded', () => {
     it('should call the right methods', () => {
       const loginToChat = sinon.stub();
-      const wrapper = shallowMount(Layout, {
+      const wrapper = shallowMount(Chat, {
         localVue,
         store,
         methods: {
           loginToChat,
         },
       });
-      
+
       wrapper.vm.afterChatLoaded();
       expect(loginToChat.calledOnce).to.be.true;
       expect(wrapper.vm.iframeInitialized).to.be.true;
-     });
+    });
   });
 
   describe('#loginToChat', () => {
     context('createChatSession is successfull', () => {
-
-      it('should call the right methods', (done) => {
+      it('should call the right methods', done => {
         const logoutFromChat = sinon.stub();
         const contentWindow = {
-          postMessage: () => {}
+          postMessage: () => {},
         };
         const contentWindowMock = sinon.mock(contentWindow);
-        const wrapper = shallowMount(Layout, {
+        const wrapper = shallowMount(Chat, {
           localVue,
           store,
           methods: {
             logoutFromChat,
           },
         });
-        actions.createChatSession.resolves({authToken: 'token'});
-        wrapper.setData({contentWindow});
+        actions.createChatSession.resolves({ authToken: 'token' });
+        wrapper.setData({ contentWindow });
 
-        contentWindowMock.expects("postMessage").once().withArgs({
-          externalCommand: 'login-with-token',
-          token: 'token',
-        }, '*');
+        contentWindowMock
+          .expects('postMessage')
+          .once()
+          .withArgs(
+            {
+              externalCommand: 'login-with-token',
+              token: 'token',
+            },
+            '*',
+          );
 
         wrapper.vm.loginToChat();
         expect(logoutFromChat.calledOnce).to.be.true;
@@ -111,26 +113,27 @@ describe('me/inbox/Layout.vue', () => {
     });
 
     context('createChatSession fails', () => {
-
-      it('should call the right methods', (done) => {
+      it('should call the right methods', done => {
         const logoutFromChat = sinon.stub();
         const contentWindow = {
-          postMessage: () => {}
+          postMessage: () => {},
         };
         window.alert = sinon.spy();
         const contentWindowMock = sinon.mock(contentWindow);
 
-        const wrapper = shallowMount(Layout, {
+        const wrapper = shallowMount(Chat, {
           localVue,
           store,
           methods: {
             logoutFromChat,
           },
         });
-        actions.createChatSession.rejects(function() { return new Error('errorMsg'); });
-        wrapper.setData({contentWindow});
+        actions.createChatSession.rejects(function() {
+          return new Error('errorMsg');
+        });
+        wrapper.setData({ contentWindow });
 
-        contentWindowMock.expects("postMessage").never();
+        contentWindowMock.expects('postMessage').never();
 
         wrapper.vm.loginToChat();
         expect(logoutFromChat.calledOnce).to.be.true;
@@ -145,27 +148,31 @@ describe('me/inbox/Layout.vue', () => {
   });
 
   describe('#logoutFromChat', () => {
-   
-   it('should call the fetchConversationPreviews on creation', () => {
-    const contentWindow = {
-      postMessage: () => {}
-    };
-    const contentWindowMock = sinon.mock(contentWindow);
+    it('should call the fetchConversationPreviews on creation', () => {
+      const contentWindow = {
+        postMessage: () => {},
+      };
+      const contentWindowMock = sinon.mock(contentWindow);
 
-    const wrapper = shallowMount(Layout, {
-      localVue,
-      store,
+      const wrapper = shallowMount(Chat, {
+        localVue,
+        store,
+      });
+
+      wrapper.setData({ contentWindow });
+      contentWindowMock
+        .expects('postMessage')
+        .once()
+        .withArgs(
+          {
+            externalCommand: 'logout',
+          },
+          '*',
+        );
+
+      wrapper.vm.logoutFromChat();
+
+      contentWindowMock.verify();
     });
-
-    wrapper.setData({contentWindow});
-    contentWindowMock.expects("postMessage").once().withArgs({
-      externalCommand: 'logout',
-    }, '*');
-
-    wrapper.vm.logoutFromChat();
-
-    contentWindowMock.verify();
-   });
-
   });
 });

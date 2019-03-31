@@ -1,5 +1,42 @@
 <template>
-  <div class="form">
+  <v-container fluid grid-list-lg>
+    <v-layout row wrap justify-center>
+      <v-flex xs5>
+        <v-card>
+          <v-container fluid grid-list-lg>
+            <v-alert :value="true" type="error" v-if="formErrors.length > 0">Some errors occurred:
+              <ul>
+                <li v-for="(error, i) in formErrors" :key="i">{{ error }}</li>
+              </ul>
+            </v-alert>
+            <form>
+              <v-text-field
+                v-model="email"
+                v-validate="validations.email"
+                :error-messages="veeErrors.collect('email')"
+                label="Email"
+                data-vv-name="email"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="password"
+                v-validate="validations.password"
+                :error-messages="veeErrors.collect('password')"
+                label="Password"
+                data-vv-name="password"
+                required
+              ></v-text-field>
+
+              <v-btn @click="signIn" color="primary">Sign in</v-btn>
+            </form>
+          </v-container>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+
+  <!-- <div class="form">
     <section class="mbr-section content5 cid-r3amUe0ElS mbr-parallax-background" id="content5-t">
       <div class="container">
         <div class="media-container-row">
@@ -13,7 +50,7 @@
     <br>
 
     <div class="errors">
-      <div class="error" v-for="error in errors" :key="error">{{error}}</div>
+      <div class="error" v-for="error in formErrors" :key="error">{{error}}</div>
     </div>
 
     <section class="cid-r3ansR389K mbr" id="header15-u">
@@ -59,7 +96,6 @@
                       class="btn btn-secondary btn-form display-4 submit-button login-button"
                       @click="signIn()"
                     >Sign In</button>
-                    <!-- <button href="" type="submit" class="btn btn-secondary btn-form display-4">SEND FORM</button> -->
                   </span>
                 </form>
               </div>
@@ -68,17 +104,7 @@
         </div>
       </div>
     </section>
-    <br>
-    <br>
-
-    <!-- <form>
-      <input type="email" v-model="email" placeholder="email" />
-      <br/>
-      <input type="password" v-model="password" placeholder="password"/>
-      <br/>
-      <button class="login-button" type="button" @click="signIn()">Sign In</button>
-    </form>-->
-  </div>
+  </div>-->
 </template>
 
 <script lang="ts">
@@ -89,41 +115,55 @@ export default class Form extends Vue {
   public email: string = '';
   public password: string = '';
 
-  public errors: string[] = [];
+  public formErrors: string[] = [];
+
+  public validations = {
+    email: {
+      required: true,
+      email: true,
+    },
+    password: {
+      required: true,
+    },
+  };
 
   public onLoginError(res: any): void {
     if (res.response) {
       if (res.response.status === 401) {
         const errors = res.response.data.errors;
         if (errors) {
-          this.errors = errors;
+          this.formErrors = errors;
         }
       } else if (res.response.status === 500) {
-        this.errors.push(
+        this.formErrors.push(
           'Cannot process your request right now, please try again later.',
         );
       } else {
-        this.errors.push(
+        this.formErrors.push(
           'An unexpected error happened, please try again later.',
         );
       }
     } else {
-      this.errors.push(
+      this.formErrors.push(
         'The server seems unresponsive, please try again later.',
       );
     }
   }
 
   private signIn() {
-    this.errors = [];
-    this.$auth.login({
-      params: { email: this.email, password: this.password }, // data: {} in Axios
-      // tslint:disable-next-line:no-empty
-      success: () => {},
-      error: this.onLoginError,
-      rememberMe: true,
-      redirect: '/me',
-      fetchUser: true,
+    this.formErrors = [];
+    this.$validator.validateAll().then((valid) => {
+      if (valid) {
+        this.$auth.login({
+          params: { email: this.email, password: this.password }, // data: {} in Axios
+          // tslint:disable-next-line:no-empty
+          success: () => {},
+          error: this.onLoginError,
+          rememberMe: true,
+          redirect: '/me',
+          fetchUser: true,
+        });
+      }
     });
   }
 }

@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex';
-import { NewsFeedState, Podcast } from './types';
+import { NewsFeedState, Podcast, Post } from './types';
 import moment from 'moment';
 
 export const mutations: MutationTree<NewsFeedState> = {
@@ -9,5 +9,11 @@ export const mutations: MutationTree<NewsFeedState> = {
   },
   setFetching(state, isFetching: boolean) {
     state.fetching = isFetching;
+  },
+  setGhostPosts(state, posts: Post[]) {
+    state.ghostPosts = posts;
+  },
+  setFetchingGhostPosts(state, isFetching: boolean) {
+    state.fetchingGhostPosts = isFetching;
   },
 };

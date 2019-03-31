@@ -5,7 +5,6 @@ import { RootState } from '../../types';
 import ApiInterface from '@/services/api-interface.ts';
 
 export const actions: ActionTree<MeInboxState, RootState> = {
-
   createChatSession(): Promise<any> {
     const apiInterface = new ApiInterface();
 
@@ -23,18 +22,18 @@ export const actions: ActionTree<MeInboxState, RootState> = {
     const apiInterface = new ApiInterface();
     commit('setFetching', true);
 
-    return apiInterface.getConversationPreviews()
-      .then((response: any) => {
-        commit('setPreviewConversations', response.data);
-        commit('setFetching', false);
+    return apiInterface.getConversationPreviews().then((response: any) => {
+      commit('setPreviewConversations', response.data);
+      commit('setFetching', false);
 
-        return response;
-      });
+      return response;
+    });
   },
   fetchConversation({ commit }, conversationId: number): Promise<any> {
     const apiInterface = new ApiInterface();
 
-    return apiInterface.getConversation(conversationId)
+    return apiInterface
+      .getConversation(conversationId)
       .then((response: any) => {
         commit('setCurrentConversation', response.data);
 
@@ -42,10 +41,14 @@ export const actions: ActionTree<MeInboxState, RootState> = {
       });
   },
 
-  createConversation({ commit }, params: { recipients: string[], message: string }): Promise<any> {
+  createConversation(
+    { commit },
+    params: { recipients: string[]; message: string },
+  ): Promise<any> {
     const apiInterface = new ApiInterface();
 
-    return apiInterface.createConversation(params.recipients, params.message)
+    return apiInterface
+      .createConversation(params.recipients, params.message)
       .then((response: any) => {
         commit('addPreviewConversation', response.data.preview);
         commit('setCurrentConversation', response.data.full);
@@ -54,10 +57,14 @@ export const actions: ActionTree<MeInboxState, RootState> = {
       });
   },
 
-  createMessage({ commit }, params: { conversationId: number, message: string }): Promise<any> {
+  createMessage(
+    { commit },
+    params: { conversationId: number; message: string },
+  ): Promise<any> {
     const apiInterface = new ApiInterface();
 
-    return apiInterface.createMessage(params.conversationId, params.message)
+    return apiInterface
+      .createMessage(params.conversationId, params.message)
       .then((response: any) => {
         const data = response.data;
         // We are adding the message in the websocket channel receive method (ChatBody.vue)

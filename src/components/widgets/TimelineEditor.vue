@@ -1,26 +1,31 @@
 <template>
-  <div class="timeline-editor">
-    <timeline
-      ref="timeline"
-      :timeline="proxyTimeline"
-      :editMode="true"
-      v-on:updated-item="gatherItems"
-    ></timeline>
-    <button
-      class="btn btn-secondary btn-form display-4 submit-button submit-button"
-      v-on:click="addTimelineItem()"
-    >Add item</button>
-  </div>
+  <v-container>
+    <v-layout row fill-height justify-center align-center>
+      <v-flex xs12>
+        <timeline
+          ref="timeline"
+          :timeline="timeline"
+          :editMode="true"
+          v-on:updated-item="gatherItems"
+        ></timeline>
+      </v-flex>
+    </v-layout>
+    <v-layout row fill-height justify-center align-center>
+      <v-flex xs12>
+        <v-btn color="primary" @click="addTimelineItem()">Add item</v-btn>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 
 import { ITimeline, ITimelineItem } from '@/store/common/types';
-import ItemEditor from '@/components/widgets/timeline-editor/ItemEditor.vue';
 import Timeline from '@/components/widgets/Timeline.vue';
 
 import * as _ from 'lodash';
 import moment from 'moment';
+import uuid from 'uuid';
 
 @Component({
   components: {
@@ -49,11 +54,12 @@ export default class TimelineEditor extends Vue {
   }
 
   public addTimelineItem() {
-    this.proxyTimeline.items.push(this.generateDefaultTimelineItem());
+    this.timeline.items.push(this.generateDefaultTimelineItem());
   }
 
   public generateDefaultTimelineItem(): ITimelineItem {
     return {
+      internalId: uuid.v4(),
       title: 'Placeholder Title',
       description: 'Placeholder Description',
       date: moment(),

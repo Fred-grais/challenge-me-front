@@ -18,26 +18,30 @@ describe('Me/MyProjectsList.vue', () => {
   let state: MeProjectsState;
   let store: any;
 
-  const projects: ProjectPreview[] = [{
-    id: 1,
-    name: 'Name',
-    ownerPreview: {
+  const projects: ProjectPreview[] = [
+    {
       id: 1,
-      firstName: 'Fred',
-      lastName: 'Grauis',
-      position: 'CEO',
+      name: 'Name',
+      ownerPreview: {
+        id: 1,
+        firstName: 'Fred',
+        lastName: 'Grauis',
+        position: 'CEO',
+        avatarUrl: 'avatarUrl',
+      },
     },
-  },
-  {
-    id: 2,
-    name: 'Name2',
-    ownerPreview: {
+    {
       id: 2,
-      firstName: 'Fred2',
-      lastName: 'Grauis2',
-      position: 'CEO',
+      name: 'Name2',
+      ownerPreview: {
+        id: 2,
+        firstName: 'Fred2',
+        lastName: 'Grauis2',
+        position: 'CEO',
+        avatarUrl: 'avatarUrl',
+      },
     },
-  }];
+  ];
 
   const fetching = false;
 
@@ -105,7 +109,8 @@ describe('Me/MyProjectsList.vue', () => {
     const previewCards: any = wrapper.findAll(PreviewCard);
     expect(previewCards).to.have.lengthOf(2);
 
-    previewCards.wrappers.forEach((wrapper: any, i: any) => { //
+    previewCards.wrappers.forEach((wrapper: any, i: any) => {
+      //
       expect(wrapper.props().projectPreview).to.equal(projects[i]); //
     });
   });

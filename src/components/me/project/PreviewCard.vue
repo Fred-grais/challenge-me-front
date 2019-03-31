@@ -1,33 +1,42 @@
 <template>
-
-  <div class="card p-3 col-12 col-md-6 col-lg-4">
-      <div class="card-wrapper">
-          <div class="card-img">
-              <img src="assets/images/01.jpg" alt="Mobirise">
-          </div>
-          <div class="card-box">
-              <h4 class="card-title mbr-fonts-style display-7">
-                  {{ projectPreview.name }}
-              </h4>
-              <p class="mbr-text mbr-fonts-style display-7">
-                <span class="from">From {{ projectPreview.ownerPreview.firstName }} {{ projectPreview.ownerPreview.lastName }} ({{ projectPreview.ownerPreview.position }})</span>
-
-                Mobirise is an easy website builder - just drop site elements to your page, add content and style it to look the way you like.
-              </p>
-          </div>
-          <div class="mbr-section-btn text-center">
-            <router-link class="btn btn-primary display-4" :to="{ name: 'my_project', params: { id: projectPreview.id }}">See more</router-link>
-          </div>
-      </div>
-  </div>
-  <!-- <div class="project-preview-card">
-    <hr/>
-    <div>{{ projectPreview.id }}</div>
-    <div class="from">From {{ projectPreview.ownerPreview.firstName }} {{ projectPreview.ownerPreview.lastName }} ({{ projectPreview.ownerPreview.position }})</div>
-
-    <div><router-link :to="{ name: 'my_project', params: { id: projectPreview.id } }">{{ projectPreview.name }}</router-link></div>
-    <hr/>
-  </div> -->
+  <v-hover>
+    <v-card
+      slot-scope="{ hover }"
+      :color="`cyan darken-${color}`"
+      class="white--text"
+      :to="{ name: 'my_project', params: { id: projectPreview.id }}"
+      :class="`elevation-${hover ? 12 : 2}`"
+    >
+      <v-layout row>
+        <v-flex xs7>
+          <v-card-title primary-title>
+            <div>
+              <div class="headline" v-text="projectPreview.name"></div>
+              <div>{{ projectPreview.description }}</div>
+            </div>
+          </v-card-title>
+        </v-flex>
+        <v-flex xs5 pr-5>
+          <v-img :src="projectPreview.logoUrl || 'assets/images/01.jpg'" height="250px" contain>
+            <template v-slot:placeholder>
+              <v-layout fill-height align-center justify-center ma-0>
+                <v-progress-circular indeterminate color="cyan"></v-progress-circular>
+              </v-layout>
+            </template>
+          </v-img>
+        </v-flex>
+      </v-layout>
+      <v-divider light></v-divider>
+      <v-card-actions class="pa-3">
+        <v-spacer></v-spacer>
+        <v-icon>star</v-icon>
+        <v-icon>star_half</v-icon>
+        <v-icon>star_border</v-icon>
+        <v-icon>star_border</v-icon>
+        <v-icon>star_border</v-icon>
+      </v-card-actions>
+    </v-card>
+  </v-hover>
 </template>
 
 <script lang="ts">
@@ -37,7 +46,13 @@ import { ProjectPreview } from '@/store/projects/types';
 
 @Component
 export default class PreviewCard extends Vue {
+  public color!: number;
+
   @Prop() private projectPreview!: ProjectPreview;
+
+  public created() {
+    this.color = Math.floor(Math.random() * 4) + 1;
+  }
 }
 </script>
 

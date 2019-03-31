@@ -7,13 +7,10 @@ import MainPodcastViewer from '@/components/widgets/news-feed/MainPodcastViewer.
 import SitePresentation from '@/components/home/SitePresentation.vue';
 
 describe('views/Home.vue', () => {
-
   it('should have the correct children', () => {
     const wrapper = shallowMount(Home);
 
     expect(wrapper.findAll(SitePresentation)).to.have.lengthOf(1);
     expect(wrapper.findAll(MainPodcastViewer)).to.have.lengthOf(1);
   });
-
-
 });

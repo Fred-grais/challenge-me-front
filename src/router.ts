@@ -14,69 +14,64 @@ export default new Router({
     {
       path: '/about',
       name: 'about',
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      component: () => import('./views/About.vue'),
     },
     {
       path: '/projects',
       name: 'projects',
-      component: () => import(/* webpackChunkName: "about" */ './views/Projects.vue'),
+      component: () => import('./views/Projects.vue'),
     },
     {
       path: '/project/:id',
       name: 'project',
-      component: () => import(/* webpackChunkName: "about" */ './views/Project.vue'),
+      component: () => import('./views/Project.vue'),
     },
     {
       path: '/users',
       name: 'users',
-      component: () => import(/* webpackChunkName: "about" */ './views/Users.vue'),
+      component: () => import('./views/Users.vue'),
     },
     {
       path: '/user/:id',
       name: 'user',
-      component: () => import(/* webpackChunkName: "about" */ './views/User.vue'),
+      component: () => import('./views/User.vue'),
     },
     {
       path: '/me',
       meta: { auth: true },
-      component: () => import(/* webpackChunkName: "about" */ './views/MeLayout.vue'),
+      component: () => import('./views/MeLayout.vue'),
       children: [
         {
           path: '',
           name: 'me',
-          component: () => import(/* webpackChunkName: "about" */ './views/me/Profile.vue'),
+          component: () => import('./views/me/Profile.vue'),
         },
         {
           path: 'projects',
           name: 'my_projects',
-          component: () => import(/* webpackChunkName: "about" */ './views/me/Projects.vue'),
+          component: () => import('./views/me/Projects.vue'),
         },
         {
           path: 'project/:id',
           name: 'my_project',
-          component: () => import(/* webpackChunkName: "about" */ './views/me/Project.vue'),
-        },
-        {
-          path: 'chat',
-          name: 'chat',
-          component: () => import(/* webpackChunkName: "about" */ './views/me/Inbox.vue'),
+          component: () => import('./views/me/Project.vue'),
         },
       ],
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import(/* webpackChunkName: "about" */ './views/Login.vue'),
+      component: () => import('./views/Login.vue'),
     },
     {
       path: '/register',
       name: 'register',
-      component: () => import(/* webpackChunkName: "about" */ './views/Register.vue'),
+      component: () => import('./views/Register.vue'),
     },
     {
       path: '/test',
       name: 'test',
-      component: () => import(/* webpackChunkName: "about" */ './views/Test.vue'),
+      component: () => import('./views/Test.vue'),
     },
   ],
 });

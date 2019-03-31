@@ -22,7 +22,11 @@ export class Conversation implements ConversationBase {
   public expandedRecipients!: User[];
   public displayedMessages!: Message[];
 
-  constructor(conversation: { id: number, expandedRecipients: User[], displayedMessages: Message[] }) {
+  constructor(conversation: {
+    id: number;
+    expandedRecipients: User[];
+    displayedMessages: Message[];
+  }) {
     this.id = conversation.id;
     this.expandedRecipients = conversation.expandedRecipients;
     this.displayedMessages = conversation.displayedMessages;

@@ -1,7 +1,7 @@
 <template>
-  <div class="project">
-      <ProjectProfile/>
-  </div>
+  <v-layout fill-height>
+    <ProjectProfile/>
+  </v-layout>
 </template>
 
 <script lang="ts">

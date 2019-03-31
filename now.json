@@ -13,7 +13,5 @@
     ]
   },
   "alias": "challenge-me",
-  "files": [
-    "dist"
-  ]
+  "files": ["dist"]
 }

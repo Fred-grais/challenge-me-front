@@ -1,14 +1,19 @@
 import Vue from 'vue';
 import { Me } from '@/store/me/types';
 import { Project } from '@/store/current-project/types';
+import each from 'lodash/each';
 
 class ApiInterface {
-  public static readonly BASEURL: string = process.env.VUE_APP_API_BASE as string;
+  public static readonly BASEURL: string = process.env
+    .VUE_APP_API_BASE as string;
 
   public static readonly ENDPOINTS: any = {
     getAllUsers: '/users',
     getUser: '/users',
     updateMe: '/auth',
+    uploadMeAvatar: '/api/v1/me/avatars_uploads',
+    uploadProjectLogo: '/api/v1/me/projects/%projectId%/logo_upload',
+    uploadProjectPictures: '/api/v1/me/projects/%projectId%/pictures_uploads',
     createProject: '/api/v1/me/projects',
     updateProject: '/api/v1/me/projects',
     getMyProject: '/api/v1/me/projects',
@@ -23,6 +28,7 @@ class ApiInterface {
     createConversation: '/api/v1/me/conversations',
     createMessage: '/api/v1/me/messages',
     createChatSession: '/api/v1/me/chat_sessions',
+    createGhostSession: '/api/v1/me/ghost_sessions',
   };
   // tslint:disable-next-line:no-empty
   constructor() {}
@@ -47,16 +53,81 @@ class ApiInterface {
     return Vue.axios.put(this.generateEndpoint('updateMe'), params);
   }
 
+  public uploadMeAvatar(
+    file: File,
+    onUploadProgress: (progressEvent: any) => void,
+  ) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    return Vue.axios.post(this.generateEndpoint('uploadMeAvatar'), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress,
+    });
+  }
+
+  public uploadProjectLogo(
+    projectId: number,
+    file: File,
+    onUploadProgress: (progressEvent: any) => void,
+  ) {
+    const formData = new FormData();
+    formData.append('logo', file);
+    return Vue.axios.post(
+      this.generateEndpoint('uploadProjectLogo').replace(
+        '%projectId%',
+        String(projectId),
+      ),
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress,
+      },
+    );
+  }
+
+  public uploadProjectPictures(
+    projectId: number,
+    files: File[],
+    onUploadProgress: (progressEvent: any) => void,
+  ) {
+    const formData = new FormData();
+    each(files, (file) => {
+      formData.append('pictures[]', file);
+    });
+    return Vue.axios.post(
+      this.generateEndpoint('uploadProjectPictures').replace(
+        '%projectId%',
+        String(projectId),
+      ),
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress,
+      },
+    );
+  }
+
   public createProject(params: Project): Promise<any> {
     return Vue.axios.post(this.generateEndpoint('createProject'), params);
   }
 
   public updateProject(params: Partial<Project>): Promise<any> {
-    return Vue.axios.put(this.generateEndpoint('updateProject') + '/' + params.id, params);
+    return Vue.axios.put(
+      this.generateEndpoint('updateProject') + '/' + params.id,
+      params,
+    );
   }
 
   public getMyProject(projectId: number): Promise<any> {
-    return Vue.axios.get(this.generateEndpoint('getMyProject') + '/' + projectId);
+    return Vue.axios.get(
+      this.generateEndpoint('getMyProject') + '/' + projectId,
+    );
   }
 
   public listMyProjects(): Promise<any> {
@@ -64,11 +135,15 @@ class ApiInterface {
   }
 
   public searchTags(search: string): Promise<any> {
-    return Vue.axios.get(this.generateEndpoint('searchTags') + '?search=' + search);
+    return Vue.axios.get(
+      this.generateEndpoint('searchTags') + '?search=' + search,
+    );
   }
 
   public searchUsers(search: string): Promise<any> {
-    return Vue.axios.get(this.generateEndpoint('searchUsers') + '?search=' + search);
+    return Vue.axios.get(
+      this.generateEndpoint('searchUsers') + '?search=' + search,
+    );
   }
 
   public getMainPodcast(): Promise<any> {
@@ -80,18 +155,35 @@ class ApiInterface {
   }
 
   public getConversation(conversationId: number): Promise<any> {
-    return Vue.axios.get(this.generateEndpoint('getConversation') + '/' + conversationId);
+    return Vue.axios.get(
+      this.generateEndpoint('getConversation') + '/' + conversationId,
+    );
   }
 
-  public createConversation(recipients: string[], message: string): Promise<any> {
-    return Vue.axios.post(this.generateEndpoint('createConversation'), { conversation: { recipients, message } });
+  public createConversation(
+    recipients: string[],
+    message: string,
+  ): Promise<any> {
+    return Vue.axios.post(this.generateEndpoint('createConversation'), {
+      conversation: { recipients, message },
+    });
   }
   public createMessage(conversationId: number, message: string): Promise<any> {
-    return Vue.axios.post(this.generateEndpoint('createMessage'), { message: { conversationId, message } });
+    return Vue.axios.post(this.generateEndpoint('createMessage'), {
+      message: { conversationId, message },
+    });
   }
 
   public createChatSession(): Promise<any> {
     return Vue.axios.post(this.generateEndpoint('createChatSession'));
+  }
+
+  public createGhostSession(): Promise<any> {
+    return Vue.axios.post(
+      this.generateEndpoint('createGhostSession'),
+      {},
+      { withCredentials: true },
+    );
   }
 
   private generateEndpoint(key: string): string {

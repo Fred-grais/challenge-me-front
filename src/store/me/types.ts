@@ -1,9 +1,7 @@
-export interface Me {
-  id: number;
+import { User } from '@/store/current-user/types';
+
+export interface Me extends User {
   email: string;
-  firstName: string;
-  lastName: string;
-  position: string;
 }
 
 export interface MeState {

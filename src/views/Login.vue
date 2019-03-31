@@ -1,7 +1,7 @@
 <template>
-  <div class="login">
+  <v-container pa-5>
     <Form/>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -13,8 +13,7 @@ import Form from '@/components/login/Form.vue';
     Form,
   },
 })
-export default class Login extends Vue {
-}
+export default class Login extends Vue {}
 </script>
 
 <style lang="scss" scoped>

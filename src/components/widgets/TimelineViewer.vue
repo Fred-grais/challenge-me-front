@@ -1,5 +1,5 @@
 <template>
-  <div class="timeline-viewer-container" v-if="displayTImeline()">
+  <div class="timeline-viewer-container">
     <timeline :timeline="timeline"></timeline>
   </div>
 </template>

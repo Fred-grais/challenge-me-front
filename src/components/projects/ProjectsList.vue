@@ -1,11 +1,11 @@
 <template>
-  <div class="projects-list">
+  <!-- <div class="projects-list">
     <section class="features3 cid-r3ao134aCf" id="features3-z">
       <pulse-loader :loading="isFetching"></pulse-loader>
 
       <div class="container align-center" v-if="!isFetching">
-        <div class="errors">
-          <div class="error" v-for="error in errors" :key="error">{{ error }}</div>
+        <div class="formErrors">
+          <div class="error" v-for="error in formErrors" :key="error">{{ error }}</div>
         </div>
 
         <h3 class="pb-5 mbr-section-subtitle mbr-fonts-style mbr-light display-1">Projects</h3>
@@ -18,7 +18,18 @@
         </div>
       </div>
     </section>
-  </div>
+  </div>-->
+  <v-container fluid grid-list-md pa-0>
+    <v-layout row wrap justify-center>
+      <v-flex
+        v-for="projectPreview in projectsPreviews"
+        :key="projectPreview.id"
+        v-bind="{ ['xs4']: true }"
+      >
+        <PreviewCard :projectPreview="projectPreview"/>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -41,7 +52,7 @@ const projectsNamespace: string = 'projectsState';
   },
 })
 export default class ProjectsList extends Vue {
-  public errors: string[] = [];
+  public formErrors: string[] = [];
 
   @Getter('getProjects', { namespace: projectsNamespace })
   public projectsPreviews!: ProjectPreview[];
@@ -52,7 +63,7 @@ export default class ProjectsList extends Vue {
 
   public created() {
     this.fetchData().catch((error) => {
-      this.errors.push(
+      this.formErrors.push(
         error.message || 'An error occured, please try again later.',
       );
     });

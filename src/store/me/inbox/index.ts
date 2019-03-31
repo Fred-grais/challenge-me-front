@@ -6,17 +6,17 @@ import { MeInboxState } from './types';
 import { RootState } from '../../types';
 
 export const state: MeInboxState = {
-    conversationPreviews: [],
-    currentConversation: undefined,
-    fetching: false,
+  conversationPreviews: [],
+  currentConversation: undefined,
+  fetching: false,
 };
 
 const namespaced: boolean = true;
 
 export const meInboxState: Module<MeInboxState, RootState> = {
-    namespaced,
-    state,
-    getters,
-    actions,
-    mutations,
+  namespaced,
+  state,
+  getters,
+  actions,
+  mutations,
 };

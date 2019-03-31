@@ -14,20 +14,20 @@ import { meInboxState } from './me/inbox/index';
 Vue.use(Vuex);
 
 const store: StoreOptions<RootState> = {
-    state: {
-        version: '1.0.0',
-    },
-    modules: {
-        projectsState,
-        currentProjectState,
-        usersState,
-        currentUserState,
-        meState,
-        meProjectState,
-        meProjectsState,
-        newsFeedState,
-        meInboxState,
-    },
+  state: {
+    version: '1.0.0',
+  },
+  modules: {
+    projectsState,
+    currentProjectState,
+    usersState,
+    currentUserState,
+    meState,
+    meProjectState,
+    meProjectsState,
+    newsFeedState,
+    meInboxState,
+  },
 };
 
 export default new Vuex.Store<RootState>(store);

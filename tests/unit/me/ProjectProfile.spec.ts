@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import Vuex from 'vuex'
-import VueRouter from 'vue-router'
+import Vuex from 'vuex';
+import VueRouter from 'vue-router';
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import ProjectProfile from '@/components/me/ProjectProfile.vue';
 import Form from '@/components/project/EditForm.vue';
@@ -21,9 +21,11 @@ describe('Me/ProjectProfile.vue', () => {
 
   const project: Project = {
     id: 1,
+    logoUrl: 'logoUrl',
+    picturesUrls: ['pictureUrl1', 'pictureUrl2'],
     name: 'Name',
     description: 'Description',
-    timeline: {items: []},
+    timeline: { items: [] },
     activitySectorList: [],
     challengesNeededList: [],
     ownerFull: {
@@ -32,7 +34,13 @@ describe('Me/ProjectProfile.vue', () => {
       lastName: 'Grauis',
       position: 'CEO',
       mobile: '0102030405',
+      status: 'active',
+      twitterId: 'twitterId',
+      rocketChatProfile: { name: 'rocketchat_username' },
+      timeline: { items: [] },
+      avatarUrl: 'avatarUrl',
     },
+    rocketChatProfile: { name: 'rocketchat_username' },
   };
 
   const fetching = false;
@@ -40,11 +48,11 @@ describe('Me/ProjectProfile.vue', () => {
   beforeEach(() => {
     state = {
       project,
-      fetching
+      fetching,
     };
 
     actions = {
-      fetchData: sinon.stub()
+      fetchData: sinon.stub(),
     };
 
     store = new Vuex.Store({
@@ -53,25 +61,25 @@ describe('Me/ProjectProfile.vue', () => {
           namespaced: true,
           state,
           actions,
-          getters: meProjectState.getters
-        }
-      }
+          getters: meProjectState.getters,
+        },
+      },
     });
-  })
+  });
 
   it('should have a Form component child', () => {
-    const $route = { path: '/', params: {id: 1} };
+    const $route = { path: '/', params: { id: 1 } };
     const wrapper = mount(ProjectProfile, {
       localVue,
       store,
-      mocks: { $route }
+      mocks: { $route },
     });
     //expect((wrapper.vm.$children[0]['$options'] as any)['_componentTag']).to.equal('Form');
     expect(wrapper.contains(Form)).to.be.true;
   });
 
   it('should call the fetchProjectDetails method on creation', () => {
-    const $route = { path: '/', params: {id: 1} };
+    const $route = { path: '/', params: { id: 1 } };
     const stub = sinon.stub();
     const wrapper = shallowMount(ProjectProfile, {
       localVue,
@@ -79,14 +87,14 @@ describe('Me/ProjectProfile.vue', () => {
       methods: {
         fetchProjectDetails: stub,
       },
-      mocks: { $route }
+      mocks: { $route },
     });
 
     expect(stub.called).to.be.true;
   });
 
   it('should display a loader when fetching the data and hide it when loaded', () => {
-    const $route = { path: '/', params: {id: 1} };
+    const $route = { path: '/', params: { id: 1 } };
 
     const wrapper = shallowMount(ProjectProfile, {
       localVue,
@@ -104,14 +112,13 @@ describe('Me/ProjectProfile.vue', () => {
   });
 
   describe('#fetchProjectDetails', () => {
-
     it('should call fetchData with the correct params', () => {
-      const $route = { path: '/', params: {id: 1} };
+      const $route = { path: '/', params: { id: 1 } };
       const stub = sinon.stub();
       const wrapper = shallowMount(ProjectProfile, {
         localVue,
         store,
-        mocks: { $route }
+        mocks: { $route },
       });
 
       wrapper.vm.fetchProjectDetails();
@@ -122,10 +129,9 @@ describe('Me/ProjectProfile.vue', () => {
   });
 
   describe('Watchers', () => {
-
     it('should watch the $route property', (done) => {
       const $route = { path: '/me/project/:id', name: 'test' };
-      const router = new VueRouter({ routes: [$route] })
+      const router = new VueRouter({ routes: [$route] });
       const stub = sinon.stub();
       localVue.use(VueRouter);
       const wrapper = shallowMount(ProjectProfile, {
@@ -134,7 +140,7 @@ describe('Me/ProjectProfile.vue', () => {
         router,
         methods: {
           fetchProjectDetails: stub,
-        }
+        },
       });
 
       stub.reset();
@@ -144,10 +150,8 @@ describe('Me/ProjectProfile.vue', () => {
 
       wrapper.vm.$nextTick(() => {
         expect(stub.called).to.be.true;
-        done()
+        done();
       });
-
     });
-
   });
 });

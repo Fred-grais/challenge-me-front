@@ -4,11 +4,12 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 describe('services/video-chat.vue', () => {
-
   describe('constructor', () => {
-
     it('should call the right methods', () => {
-      const stub = sinon.stub(VideoChatInterface.prototype, 'activateVideoChat')
+      const stub = sinon.stub(
+        VideoChatInterface.prototype,
+        'activateVideoChat',
+      );
       const spyFunc = new VideoChatInterface();
       expect(stub.calledOnce).to.be.true;
       stub.restore();
@@ -16,12 +17,15 @@ describe('services/video-chat.vue', () => {
   });
 
   describe('activateVideoChat', () => {
-
     it('should call the right methods', async () => {
-      const acquireUserMediaStub = sinon.stub(VideoChatInterface.prototype, <any>'acquireUserMedia');
+      const acquireUserMediaStub = sinon.stub(VideoChatInterface.prototype, <
+        any
+      >'acquireUserMedia');
       acquireUserMediaStub.resolves();
 
-      const initializeStub = sinon.stub(VideoChatInterface.prototype, <any>'initialize');
+      const initializeStub = sinon.stub(VideoChatInterface.prototype, <any>(
+        'initialize'
+      ));
 
       const videoChat = await new VideoChatInterface();
 
@@ -40,8 +44,13 @@ describe('services/video-chat.vue', () => {
 
   describe('callPeer', () => {
     it('should call the right methods', () => {
-      const initiateCallToPeerStub = sinon.stub(VideoChatInterface.prototype, <any>'initiateCallToPeer');
-      const stub = sinon.stub(VideoChatInterface.prototype, 'activateVideoChat');
+      const initiateCallToPeerStub = sinon.stub(VideoChatInterface.prototype, <
+        any
+      >'initiateCallToPeer');
+      const stub = sinon.stub(
+        VideoChatInterface.prototype,
+        'activateVideoChat',
+      );
       const videoChat = new VideoChatInterface();
       videoChat.callPeer('peerId');
 
@@ -58,7 +67,10 @@ describe('services/video-chat.vue', () => {
       //const peerIdStub = sinon.stub(Peer.prototype, 'id').returns('id1');
 
       const callbackSpy = sinon.spy();
-      const stub = sinon.stub(VideoChatInterface.prototype, 'activateVideoChat');
+      const stub = sinon.stub(
+        VideoChatInterface.prototype,
+        'activateVideoChat',
+      );
       const videoChat = new VideoChatInterface();
 
       videoChat.peer.id = 'id1';
@@ -90,13 +102,19 @@ describe('services/video-chat.vue', () => {
 
       navigator.mediaDevices = stubbedMediaDevices;
 
-      const stub = sinon.stub(VideoChatInterface.prototype, 'activateVideoChat');
+      const stub = sinon.stub(
+        VideoChatInterface.prototype,
+        'activateVideoChat',
+      );
       const videoChat = new VideoChatInterface();
 
       await videoChat['acquireUserMedia']();
 
       expect(getUserMediaStub.calledOnce).to.be.true;
-      expect(getUserMediaStub.getCall(0).args[0]).to.deep.equal({audio: true, video: true});
+      expect(getUserMediaStub.getCall(0).args[0]).to.deep.equal({
+        audio: true,
+        video: true,
+      });
 
       expect(videoChat.localStream).to.equal('mediaStream');
 
@@ -143,12 +161,18 @@ describe('services/video-chat.vue', () => {
   });
 
   describe('#initialize', () => {
-
     it('should call the right methods', () => {
-      const peerOnOpenActionStub = sinon.stub(VideoChatInterface.prototype, <any>'peerOnOpenAction');
-      const peerOnErrorActionStub = sinon.stub(VideoChatInterface.prototype, <any>'peerOnErrorAction');
+      const peerOnOpenActionStub = sinon.stub(VideoChatInterface.prototype, <
+        any
+      >'peerOnOpenAction');
+      const peerOnErrorActionStub = sinon.stub(VideoChatInterface.prototype, <
+        any
+      >'peerOnErrorAction');
 
-      const stub = sinon.stub(VideoChatInterface.prototype, 'activateVideoChat');
+      const stub = sinon.stub(
+        VideoChatInterface.prototype,
+        'activateVideoChat',
+      );
       const videoChat = new VideoChatInterface();
 
       videoChat['initialize']();
@@ -161,61 +185,66 @@ describe('services/video-chat.vue', () => {
   });
 
   describe('#initiateCallToPeer', () => {
-      context('No current call', () => {
-        it('should create a call and return it', () => {
-          const targetPeerId = 'targetPeerId';
-          const callPeerStub = sinon.stub(Peer.prototype, 'call');
-          callPeerStub.returns('returnedCall' as any);
+    context('No current call', () => {
+      it('should create a call and return it', () => {
+        const targetPeerId = 'targetPeerId';
+        const callPeerStub = sinon.stub(Peer.prototype, 'call');
+        callPeerStub.returns('returnedCall' as any);
 
-          const stub = sinon.stub(VideoChatInterface.prototype, 'activateVideoChat');
-          const videoChat = new VideoChatInterface();
+        const stub = sinon.stub(
+          VideoChatInterface.prototype,
+          'activateVideoChat',
+        );
+        const videoChat = new VideoChatInterface();
 
-          videoChat.localStream = 'localStream' as any;
+        videoChat.localStream = 'localStream' as any;
 
-          const returnValue = videoChat['initiateCallToPeer'](targetPeerId);
+        const returnValue = videoChat['initiateCallToPeer'](targetPeerId);
 
-          expect(callPeerStub.calledOnce).to.be.true;
-          expect(callPeerStub.calledWith(targetPeerId, 'localStream')).to.be.true;
+        expect(callPeerStub.calledOnce).to.be.true;
+        expect(callPeerStub.calledWith(targetPeerId, 'localStream')).to.be.true;
 
-          expect(videoChat.currentCall).to.equal('returnedCall');
-          expect(returnValue).to.equal('returnedCall');
+        expect(videoChat.currentCall).to.equal('returnedCall');
+        expect(returnValue).to.equal('returnedCall');
 
-          stub.restore();
-          callPeerStub.restore();
-        });
-
+        stub.restore();
+        callPeerStub.restore();
       });
+    });
 
-      context('Current call present', () => {
-          it('should close the current call then create a new call and return it', () => {
-            const targetPeerId = 'targetPeerId';
-            const closeCallStub = sinon.stub();
-            const currentCall = {
-              close: closeCallStub
-            };
+    context('Current call present', () => {
+      it('should close the current call then create a new call and return it', () => {
+        const targetPeerId = 'targetPeerId';
+        const closeCallStub = sinon.stub();
+        const currentCall = {
+          close: closeCallStub,
+        };
 
-            const callPeerStub = sinon.stub(Peer.prototype, 'call');
-            callPeerStub.returns('returnedCall' as any);
+        const callPeerStub = sinon.stub(Peer.prototype, 'call');
+        callPeerStub.returns('returnedCall' as any);
 
-            const stub = sinon.stub(VideoChatInterface.prototype, 'activateVideoChat');
-            const videoChat = new VideoChatInterface();
+        const stub = sinon.stub(
+          VideoChatInterface.prototype,
+          'activateVideoChat',
+        );
+        const videoChat = new VideoChatInterface();
 
-            videoChat.currentCall = currentCall as any;
-            videoChat.localStream = 'localStream' as any;
+        videoChat.currentCall = currentCall as any;
+        videoChat.localStream = 'localStream' as any;
 
-            const returnValue = videoChat['initiateCallToPeer'](targetPeerId);
+        const returnValue = videoChat['initiateCallToPeer'](targetPeerId);
 
-            expect(closeCallStub.calledOnce).to.be.true;
+        expect(closeCallStub.calledOnce).to.be.true;
 
-            expect(callPeerStub.calledOnce).to.be.true;
-            expect(callPeerStub.calledWith(targetPeerId, 'localStream')).to.be.true;
+        expect(callPeerStub.calledOnce).to.be.true;
+        expect(callPeerStub.calledWith(targetPeerId, 'localStream')).to.be.true;
 
-            expect(videoChat.currentCall).to.equal('returnedCall');
-            expect(returnValue).to.equal('returnedCall');
+        expect(videoChat.currentCall).to.equal('returnedCall');
+        expect(returnValue).to.equal('returnedCall');
 
-            stub.restore();
-            callPeerStub.restore();
-          });
+        stub.restore();
+        callPeerStub.restore();
       });
+    });
   });
 });

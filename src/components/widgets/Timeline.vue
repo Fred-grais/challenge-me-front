@@ -1,5 +1,5 @@
 <template>
-  <div class="timeline-container" v-if="displayTImeline()">
+  <!-- <div class="timeline-container" v-if="displayTImeline()">
     <header>
       <div class="container text-center">
         <h1>Timeline</h1>
@@ -25,13 +25,88 @@
         ></item>
       </div>
     </section>
-  </div>
+  </div>-->
+  <v-timeline>
+    <Item
+      v-for="(item, i) in timeline.items"
+      :key="item.internalId"
+      :item="item"
+      :right="i%2===0"
+      :itemindex="i"
+      :color="colors[i%5]"
+      :editMode="editMode"
+    />
+    <!-- <v-timeline-item color="amber lighten-1" fill-dot left small>
+      <v-card>
+        <v-card-title class="amber lighten-1 justify-end">
+          <h2 class="display-1 mr-3 white--text font-weight-light">Title 2</h2>
+          <v-icon dark size="42">mdi-home-outline</v-icon>
+        </v-card-title>
+        <v-container>
+          <v-layout>
+            <v-flex
+              xs8
+            >Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod convenire principes at. Est et nobis iisque percipit.</v-flex>
+            <v-flex xs4>Lorem ipsum dolor sit amet, no nam oblique veritus.</v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
+    </v-timeline-item>-->
+    <!-- <v-timeline-item color="cyan lighten-1" fill-dot right>
+      <v-card>
+        <v-card-title class="cyan lighten-1">
+          <v-icon class="mr-3" dark size="42">mdi-email-outline</v-icon>
+          <h2 class="display-1 white--text font-weight-light">Title 3</h2>
+        </v-card-title>
+        <v-container>
+          <v-layout>
+            <v-flex
+              v-for="n in 3"
+              :key="n"
+              xs4
+            >Lorem ipsum dolor sit amet, no nam oblique veritus no nam oblique.</v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
+    </v-timeline-item>
+
+    <v-timeline-item color="red lighten-1" fill-dot left small>
+      <v-card>
+        <v-card-title class="red lighten-1 justify-end">
+          <h2 class="display-1 mr-3 white--text font-weight-light">Title 4</h2>
+          <v-icon dark size="42">mdi-account-multiple-outline</v-icon>
+        </v-card-title>
+        <v-container>
+          <v-layout>
+            <v-flex xs2>
+              <v-icon size="64">mdi-server-network</v-icon>
+            </v-flex>
+            <v-flex
+              xs10
+            >Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod convenire principes at. Est et nobis iisque percipit, an vim zril disputando voluptatibus.</v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
+    </v-timeline-item>-->
+    <!-- <v-timeline-item color="green lighten-1" fill-dot right>
+      <v-card>
+        <v-card-title class="green lighten-1">
+          <v-icon class="mr-3" dark size="42">mdi-phone-in-talk</v-icon>
+          <h2 class="display-1 white--text font-weight-light">Title 5</h2>
+        </v-card-title>
+        <v-container>
+          <v-layout>
+            <v-flex>Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod convenire principes at. Est et nobis iisque percipit, an vim zril disputando voluptatibus, vix an salutandi sententiae.</v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
+    </v-timeline-item>-->
+  </v-timeline>
 </template>
 
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
-import ScrollReveal from 'scrollreveal';
 import Item from '@/components/widgets/timeline/Item.vue';
 import { ITimeline, ITimelineItem } from '@/store/common/types';
 
@@ -56,32 +131,9 @@ export default class Timeline extends Vue {
 
   public scrollViewInitialized = false;
 
-  public mounted() {
-    globalEventBus.$on('timeline-tab-activated', this.initScrollReveal);
-  }
+  public colors = ['red', 'cyan', 'green', 'blue', 'purple'];
 
-  public initScrollReveal() {
-    if (!this.scrollViewInitialized) {
-      const sr = ScrollReveal();
-      sr.reveal('.js--fadeInLeft', {
-        origin: 'left',
-        distance: '300px',
-        easing: 'ease-in-out',
-        duration: 800,
-      });
-
-      sr.reveal('.js--fadeInRight', {
-        origin: 'right',
-        distance: '300px',
-        easing: 'ease-in-out',
-        duration: 800,
-      });
-
-      this.scrollViewInitialized = true;
-    }
-  }
-
-  public displayTImeline() {
+   public displayTImeline() {
     return this.timeline.items.length > 0;
   }
 
@@ -116,7 +168,7 @@ $secondary-text: #757575;
 $accent: #ff4081;
 
 .timeline-container {
-  font-family: "Roboto";
+  font-family: 'Roboto';
   font-size: 17px;
   font-weight: 400;
   background-color: #eee;
@@ -138,7 +190,7 @@ $accent: #ff4081;
     padding: 150px 0;
 
     p {
-      font-family: "Allura";
+      font-family: 'Allura';
       color: rgba(255, 255, 255, 0.2);
       margin-bottom: 0;
       font-size: 60px;
@@ -150,7 +202,7 @@ $accent: #ff4081;
     position: relative;
 
     &::before {
-      content: "";
+      content: '';
       background: $light-primary;
       width: 5px;
       height: 95%;
@@ -175,7 +227,7 @@ $accent: #ff4081;
         }
 
         &::after {
-          content: "";
+          content: '';
           position: absolute;
           border-style: solid;
           width: 0;
@@ -189,7 +241,7 @@ $accent: #ff4081;
     }
 
     &::after {
-      content: "";
+      content: '';
       display: block;
       clear: both;
     }
@@ -204,7 +256,7 @@ $accent: #ff4081;
     box-shadow: 0 20px 25px -15px rgba(0, 0, 0, 0.3);
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       border-style: solid;
       width: 0;
@@ -316,7 +368,7 @@ $accent: #ff4081;
         &:nth-child(odd) {
           .timeline-content {
             &::after {
-              content: "";
+              content: '';
               position: absolute;
               border-style: solid;
               width: 0;

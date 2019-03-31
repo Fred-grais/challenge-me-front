@@ -1,7 +1,13 @@
-import ActionCable, { Cable, ChannelNameWithParams, Channel, CreateMixin } from 'actioncable';
+import ActionCable, {
+  Cable,
+  ChannelNameWithParams,
+  Channel,
+  CreateMixin,
+} from 'actioncable';
 
 class ActionCableInterface {
-  public static readonly SOCKET_SERVER_URL: string = process.env.VUE_APP_SOCKET_SERVER_URL as string;
+  public static readonly SOCKET_SERVER_URL: string = process.env
+    .VUE_APP_SOCKET_SERVER_URL as string;
   // public static readonly SOCKET_SERVER_URL: string = 'ws://localhost:3000/cable';
   private static instance: ActionCableInterface;
 
@@ -11,16 +17,26 @@ class ActionCableInterface {
     this.createConsumer();
   }
 
-  public subscribeToChannel(channelNameWithParams: ChannelNameWithParams, channelImplementation: CreateMixin): Channel {
-    return this.cable.subscriptions.create(channelNameWithParams, channelImplementation);
+  public subscribeToChannel(
+    channelNameWithParams: ChannelNameWithParams,
+    channelImplementation: CreateMixin,
+  ): Channel {
+    return this.cable.subscriptions.create(
+      channelNameWithParams,
+      channelImplementation,
+    );
   }
 
   private createConsumer() {
     const token = window.localStorage.getItem('default_auth_token');
     if (token) {
-      this.cable = ActionCable.createConsumer(ActionCableInterface.SOCKET_SERVER_URL + `?auth=${btoa(token)}`);
+      this.cable = ActionCable.createConsumer(
+        ActionCableInterface.SOCKET_SERVER_URL + `?auth=${btoa(token)}`,
+      );
     } else {
-      throw new Error('User must be logged in to initiate a Websocket connection');
+      throw new Error(
+        'User must be logged in to initiate a Websocket connection',
+      );
     }
   }
 

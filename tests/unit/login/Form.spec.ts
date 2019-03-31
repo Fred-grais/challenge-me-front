@@ -11,7 +11,6 @@ import nock from 'nock';
 const localVue = createLocalVue();
 
 describe('login/Form.vue', () => {
-
   it('renders the login form', () => {
     const wrapper = shallowMount(Form);
     expect(wrapper.contains('input[type="email"]')).to.be.true;
@@ -40,14 +39,13 @@ describe('login/Form.vue', () => {
   });
 
   describe('Login failure', () => {
-
     it('handles response object is empty', () => {
       const wrapper = shallowMount(Form);
-      const response: any = {
-
-      };
+      const response: any = {};
       wrapper.vm.onLoginError(response);
-      expect(wrapper.vm.errors).to.be.deep.equal(['The server seems unresponsive, please try again later.']);
+      expect(wrapper.vm.errors).to.be.deep.equal([
+        'The server seems unresponsive, please try again later.',
+      ]);
     });
 
     it('handles response status is 401', () => {
@@ -59,10 +57,12 @@ describe('login/Form.vue', () => {
             errors: ['Error from backend 1', 'Error from backend 2'],
           },
         },
-
       };
       wrapper.vm.onLoginError(response);
-      expect(wrapper.vm.errors).to.be.deep.equal(['Error from backend 1', 'Error from backend 2']);
+      expect(wrapper.vm.errors).to.be.deep.equal([
+        'Error from backend 1',
+        'Error from backend 2',
+      ]);
     });
 
     it('handles response status is 500', () => {
@@ -71,10 +71,11 @@ describe('login/Form.vue', () => {
         response: {
           status: 500,
         },
-
       };
       wrapper.vm.onLoginError(response);
-      expect(wrapper.vm.errors).to.be.deep.equal(['Cannot process your request right now, please try again later.']);
+      expect(wrapper.vm.errors).to.be.deep.equal([
+        'Cannot process your request right now, please try again later.',
+      ]);
     });
 
     it('handles response status is other', () => {
@@ -83,13 +84,14 @@ describe('login/Form.vue', () => {
         response: {
           status: 422,
         },
-
       };
       wrapper.vm.onLoginError(response);
-      expect(wrapper.vm.errors).to.be.deep.equal(['An unexpected error happened, please try again later.']);
+      expect(wrapper.vm.errors).to.be.deep.equal([
+        'An unexpected error happened, please try again later.',
+      ]);
     });
 
-    it('should call the correct method when the login request fail', (done) => {
+    it('should call the correct method when the login request fail', done => {
       const onLoginErrorStub = sinon.stub();
       const $route = { path: '/login', name: 'login' };
       const router = new VueRouter({ routes: [$route] });
@@ -134,8 +136,4 @@ describe('login/Form.vue', () => {
       }, 300);
     });
   });
-
-
-
-
 });

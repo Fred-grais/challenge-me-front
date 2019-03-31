@@ -3,9 +3,10 @@ export interface UserPreview {
   firstName: string;
   lastName: string;
   position: string;
+  avatarUrl: string;
 }
 
 export interface UsersState {
-    users: UserPreview[];
-    fetching: boolean;
+  users: UserPreview[];
+  fetching: boolean;
 }

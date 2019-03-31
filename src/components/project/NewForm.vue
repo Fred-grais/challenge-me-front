@@ -1,7 +1,52 @@
 <template>
-  <div class="form">
-    <div class="errors">
-      <div class="error" v-for="error in errors" :key="error">{{ error }}</div>
+  <v-card pa-5>
+    <v-container fluid grid-list-lg>
+      <v-layout row wrap>
+        <v-flex xs12 pa-5>
+          <v-alert
+            :value="true"
+            type="success"
+            v-if="formSubmissionSuccessfull"
+            dismissible
+          >Project created!</v-alert>
+          <v-alert
+            :value="true"
+            type="error"
+            v-if="formErrors.length > 0"
+          >Some errors occurred while saving this project:
+            <ul>
+              <li v-for="(error, i) in formErrors" :key="i">{{ error }}</li>
+            </ul>
+          </v-alert>
+          <form>
+            <v-text-field
+              v-model="name"
+              v-validate="validations.name"
+              :error-messages="veeErrors.collect('name')"
+              label="Name"
+              data-vv-name="name"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="description"
+              v-validate="validations.description"
+              :error-messages="veeErrors.collect('description')"
+              label="Description"
+              data-vv-name="description"
+              required
+            ></v-text-field>
+
+            <v-btn @click="submit" color="primary">Create Project</v-btn>
+          </form>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+
+  <!-- <div class="form">
+    <div class="formErrors">
+      <div class="error" v-for="error in formErrors" :key="error">{{ error }}</div>
     </div>
 
     <div class="result">{{ result }}</div>
@@ -49,7 +94,6 @@
                       class="btn btn-secondary btn-form display-4 submit-button"
                       @click="submit()"
                     >Create Project</button>
-                    <!-- <button href="" type="submit" class="btn btn-secondary btn-form display-4">SEND FORM</button> -->
                   </span>
                 </form>
               </div>
@@ -58,7 +102,7 @@
         </div>
       </div>
     </section>
-  </div>
+  </div>-->
 </template>
 
 <script lang="ts">
@@ -74,37 +118,54 @@ export default class NewForm extends Vue {
   public name: string = '';
   public description: string = '';
 
-  public errors: string[] = [];
-  public result: string = '';
+  public formSubmissionSuccessfull = false;
+
+  public formErrors: string[] = [];
+
+  public validations = {
+    name: {
+      required: true,
+    },
+    description: {
+      required: true,
+    },
+  };
 
   @Action('create', { namespace: meProjectNamespace }) public createProject!: (
     p: Partial<Project>,
   ) => Promise<any>;
 
   public submit() {
-    this.errors = [];
-    this.result = '';
-
-    this.createProject({
-      name: this.name,
-      description: this.description,
-    })
-      .then((response: any) => {
-        if (response.status === 201) {
-          this.result = 'Created!';
-        } else {
-          this.errors.push('Unexpected Error');
-        }
-      })
-      .catch((error: any) => {
-        // tslint:disable-next-line:no-console
-        console.error(error);
-        if (error.response) {
-          this.errors = error.response.data;
-        } else {
-          this.errors.push('An error occurred, please try again later.');
-        }
-      });
+    this.formErrors = [];
+    this.formSubmissionSuccessfull = false;
+    this.$validator.validateAll().then((valid) => {
+      if (valid) {
+        this.createProject({
+          name: this.name,
+          description: this.description,
+        })
+          .then((response: any) => {
+            if (response.status === 201) {
+              this.formSubmissionSuccessfull = true;
+              this.name = '';
+              this.description = '';
+            } else {
+              this.formErrors.push('Unexpected Error');
+            }
+          })
+          .catch((error: any) => {
+            // tslint:disable-next-line:no-console
+            console.error(error);
+            if (error.response) {
+              this.formErrors = error.response.data;
+            } else {
+              this.formErrors.push(
+                'An error occurred, please try again later.',
+              );
+            }
+          });
+      }
+    });
   }
 }
 </script>

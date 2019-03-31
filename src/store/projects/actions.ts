@@ -9,12 +9,15 @@ export const actions: ActionTree<ProjectsState, RootState> = {
     const apiInterface = new ApiInterface();
     commit('setFetching', true);
 
-    apiInterface.getAllProjects().then((response) => {
-      commit('setProjects', response.data);
-      commit('setFetching', false);
-    }).catch((error) => {
-      commit('setProjects', []);
-      commit('setFetching', false);
-    });
+    apiInterface
+      .getAllProjects()
+      .then((response) => {
+        commit('setProjects', response.data);
+        commit('setFetching', false);
+      })
+      .catch((error) => {
+        commit('setProjects', []);
+        commit('setFetching', false);
+      });
   },
 };

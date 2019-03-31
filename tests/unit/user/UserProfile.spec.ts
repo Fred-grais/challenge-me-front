@@ -20,11 +20,16 @@ describe('user/UserProfile.vue', () => {
   let fetchDataStub: any;
 
   const user: User = {
+    avatarUrl: 'avatarUrl',
     id: 1,
     firstName: 'Fred',
     lastName: 'Grauis',
     position: 'CEO',
     mobile: '0102030405',
+    status: 'active',
+    twitterId: 'twitterId',
+    rocketChatProfile: { name: 'rocketchat_username' },
+    timeline: { items: [] },
   };
 
   const fetching = false;
@@ -32,7 +37,7 @@ describe('user/UserProfile.vue', () => {
   beforeEach(() => {
     state = {
       currentUser: user,
-      fetching
+      fetching,
     };
 
     fetchDataStub = sinon.stub();
@@ -47,14 +52,14 @@ describe('user/UserProfile.vue', () => {
           namespaced: true,
           state,
           actions,
-          getters: currentUserState.getters
-        }
-      }
+          getters: currentUserState.getters,
+        },
+      },
     });
-  })
+  });
 
   it('should call the fetchUserDetails method on creation', () => {
-    const $route = { path: '/', params: {id: 1} };
+    const $route = { path: '/', params: { id: 1 } };
     const stub = sinon.stub();
     const wrapper = shallowMount(UserProfile, {
       localVue,
@@ -62,14 +67,14 @@ describe('user/UserProfile.vue', () => {
       methods: {
         fetchUserDetails: stub,
       },
-      mocks: { $route }
+      mocks: { $route },
     });
 
     expect(stub.called).to.be.true;
   });
 
   it('should display a loader when fetching the data and hide it when loaded', () => {
-    const $route = { path: '/', params: {id: 1} };
+    const $route = { path: '/', params: { id: 1 } };
 
     const wrapper = shallowMount(UserProfile, {
       localVue,
@@ -87,9 +92,8 @@ describe('user/UserProfile.vue', () => {
   });
 
   describe('#fetchUserDetails', () => {
-
     it('should call fetchData with the correct params', () => {
-      const $route = { path: '/', params: {id: 1} };
+      const $route = { path: '/', params: { id: 1 } };
 
       const wrapper = shallowMount(UserProfile, {
         localVue,
@@ -104,55 +108,55 @@ describe('user/UserProfile.vue', () => {
     });
 
     it('should display an error message when fetchData fails', (done) => {
-      const $route = { path: '/', params: {id: 1} };
+      const $route = { path: '/', params: { id: 1 } };
       const errorMessage = 'An error occurred';
 
-      fetchDataStub.rejects({message: errorMessage});
+      fetchDataStub.rejects({ message: errorMessage });
       const wrapper = shallowMount(UserProfile, {
         localVue,
         store,
-        mocks: { $route }
+        mocks: { $route },
       });
 
       wrapper.vm.$nextTick(() => {
         expect(wrapper.find('.errors').text()).to.equal(errorMessage);
         done();
-      })
-
+      });
     });
 
     it('should display an default error message when fetchData fails without error message returned', (done) => {
-      const $route = { path: '/', params: {id: 1} };
+      const $route = { path: '/', params: { id: 1 } };
       const errorMessage = '';
 
-      fetchDataStub.rejects({message: errorMessage})
+      fetchDataStub.rejects({ message: errorMessage });
       const wrapper = shallowMount(UserProfile, {
         localVue,
         store,
-        mocks: { $route }
+        mocks: { $route },
       });
 
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.errors').text()).to.equal('An error occured, please try again later.');
+        expect(wrapper.find('.errors').text()).to.equal(
+          'An error occured, please try again later.',
+        );
         done();
-      })
+      });
     });
   });
 
   describe('Watchers', () => {
-
     it('should watch the $route property', (done) => {
       const $route = { path: '/user/:id', name: 'user' };
-      const router = new VueRouter({ routes: [$route] })
+      const router = new VueRouter({ routes: [$route] });
       const stub = sinon.stub();
-      localVue.use(VueRouter)
+      localVue.use(VueRouter);
       const wrapper = shallowMount(UserProfile, {
         localVue,
         store,
         router,
         methods: {
           fetchUserDetails: stub,
-        }
+        },
       });
 
       stub.reset();
@@ -163,8 +167,6 @@ describe('user/UserProfile.vue', () => {
         expect(stub.called).to.be.true;
         done();
       });
-
     });
-
   });
 });

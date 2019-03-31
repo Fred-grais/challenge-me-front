@@ -1,10 +1,88 @@
 <template>
-  <div class="user-profile">
+  <v-layout column fill-height>
+    <v-flex xs12>
+      <v-card tile>
+        <v-card-title primary-title>
+          <v-flex xs3>
+            <v-avatar :tile="false" :size="256" color="grey lighten-4">
+              <v-img
+                :src="currentUser.avatarUrl || 'https://api.adorable.io/avatars/285/abott@adorable.png'"
+                alt="avatar"
+              >
+                <template v-slot:placeholder>
+                  <v-layout fill-height align-center justify-center ma-0>
+                    <v-progress-circular indeterminate color="cyan"></v-progress-circular>
+                  </v-layout>
+                </template>
+              </v-img>
+            </v-avatar>
+          </v-flex>
+          <v-flex xs6>
+            <div class="text-xs-center">
+              <div class="headline">{{ currentUser.firstName }} {{ currentUser.lastName }}</div>
+              <span class="grey--text">{{ currentUser.position }}</span>
+            </div>
+            <div>
+              <v-btn @click="sendMessage" color="primary">Send message</v-btn>
+            </div>
+          </v-flex>
+        </v-card-title>
+      </v-card>
+    </v-flex>
+    <v-flex xs12>
+      <v-tabs centered color="cyan" dark icons-and-text grow>
+        <v-tabs-slider color="yellow"></v-tabs-slider>
+
+        <v-tab href="#tab-1">Recents
+          <v-icon>phone</v-icon>
+        </v-tab>
+
+        <v-tab href="#tab-2">Timeline
+          <v-icon>mdi-timeline-text</v-icon>
+        </v-tab>
+
+        <v-tab href="#tab-3">Twitter
+          <v-icon>mdi-twitter</v-icon>
+        </v-tab>
+
+        <v-tab-item value="tab-1">
+          <v-card flat>
+            <v-responsive :aspect-ratio="4/1">
+              <v-card-text>
+                htyhtyhtyhtyhh
+                htyhtyh
+                hythtyh
+                htyhtyht
+              </v-card-text>
+            </v-responsive>
+          </v-card>
+        </v-tab-item>
+
+        <v-tab-item value="tab-2">
+          <timeline :timeline="currentUser.timeline"></timeline>
+        </v-tab-item>
+
+        <v-tab-item value="tab-3">
+          <div class="twitter-widget-container" v-if="currentUser.twitterId">
+            <twitter>
+              <div slot="loading">loading .....</div>
+              <a
+                class="twitter-timeline"
+                :href="`https://twitter.com/${currentUser.twitterId}?ref_src=twsrc%5Etfw`"
+              >Tweets by Asmongold</a>
+            </twitter>
+          </div>
+          <div v-else>No twitter feed to display</div>
+        </v-tab-item>
+      </v-tabs>
+    </v-flex>
+  </v-layout>
+  <!-- <div class="user-profile">
     <pulse-loader :loading="isFetching"></pulse-loader>
 
     <div>
-      <div class="errors">
-        <div class="error" v-for="error in errors" :key="error">{{ error }}</div>
+      <div class="formErrors">
+        <div class="error" v-for="error in formErrors" :key="error">{{ error }}</div>
       </div>
     </div>
 
@@ -19,6 +97,9 @@
               <h3
                 class="mbr-section-subtitle align-center mbr-light mbr-white pb-3 mbr-fonts-style display-5"
               >{{ currentUser.position }}&nbsp;</h3>
+              <h4>
+                <button @click="sendMessage">Send message</button>
+              </h4>
             </div>
           </div>
         </div>
@@ -32,61 +113,28 @@
           >Lorem ipsum dolor sit amet, consectetur adipisicing elit</h3>
 
           <div class="container timelines-container" mbri-timelines>
-            <div class="row timeline-element reverse separline">
-              <div class="timeline-date-panel col-xs-12 col-md-6 align-left">
-                <div class="time-line-date-content">
-                  <p class="mbr-timeline-date mbr-fonts-style display-5">1 january 2018</p>
-                </div>
-              </div>
-              <span class="iconBackground"></span>
-              <div class="col-xs-12 col-md-6 align-right">
-                <div class="timeline-text-content">
-                  <h4 class="mbr-timeline-title pb-3 mbr-fonts-style display-5">Multi Homepages</h4>
-                  <p
-                    class="mbr-timeline-text mbr-fonts-style display-7"
-                  >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam erat libero, bibendum in libero tempor, luctus volutpat ligula. Integer fringilla porttitor pretium. Nam erat felis, iaculis id justo ut, ullamcorper feugiat elit. Proin vel lectus auctor, porttitor ligula vitae, convallis leo. In eget massa elit.</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="row timeline-element separline">
-              <div class="timeline-date-panel col-xs-12 col-md-6 align-right">
-                <div class="time-line-date-content">
-                  <p class="mbr-timeline-date mbr-fonts-style display-5">2 february 2019</p>
-                </div>
-              </div>
-              <span class="iconBackground"></span>
-              <div class="col-xs-12 col-md-6 align-left">
-                <div class="timeline-text-content">
-                  <h4 class="mbr-timeline-title pb-3 mbr-fonts-style display-5">Responsive Design</h4>
-                  <p
-                    class="mbr-timeline-text mbr-fonts-style display-7"
-                  >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam erat libero, bibendum in libero tempor, luctus volutpat ligula. Integer fringilla porttitor pretium. Nam erat felis, iaculis id justo ut, ullamcorper feugiat elit. Proin vel lectus auctor, porttitor ligula vitae, convallis leo. In eget massa elit.</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="row timeline-element reverse">
-              <div class="timeline-date-panel col-xs-12 col-md-6 align-left">
-                <div class="time-line-date-content">
-                  <p class="mbr-timeline-date mbr-fonts-style display-5">3 march 2020</p>
-                </div>
-              </div>
-              <span class="iconBackground"></span>
-              <div class="col-xs-12 col-md-6 align-right">
-                <div class="timeline-text-content">
-                  <h4 class="mbr-timeline-title pb-3 mbr-fonts-style display-5">Smart Watch</h4>
-                  <p
-                    class="mbr-timeline-text mbr-fonts-style display-7"
-                  >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam erat libero, bibendum in libero tempor, luctus volutpat ligula. Integer fringilla porttitor pretium. Nam erat felis, iaculis id justo ut, ullamcorper feugiat elit. Proin vel lectus auctor, porttitor ligula vitae, convallis leo. In eget massa elit.</p>
-                </div>
-              </div>
-            </div>
+            <item
+              v-for="(item, index) in currentUser.timeline.items"
+              :key="item.internalId"
+              :item="item"
+              :position="index % 2 === 0 ? 'left' : 'right'"
+            ></item>
           </div>
         </div>
       </section>
+
+      <div class="twitter-widget-container" v-if="currentUser.twitterId">
+        <twitter>
+          <div slot="loading">loading .....</div>
+          <a
+            class="twitter-timeline"
+            :href="`https://twitter.com/${currentUser.twitterId}?ref_src=twsrc%5Etfw`"
+          >Tweets by Asmongold</a>
+        </twitter>
+      </div>
+      <div v-else>No twitter feed to display</div>
     </div>
-  </div>
+  </div>-->
 </template>
 
 <script lang="ts">
@@ -94,16 +142,46 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 
 import { User } from '@/store/current-user/types';
+import { twitter } from 'vue-twitter';
+
+import RocketChatIframeCommander from '@/services/rocketchat-iframe-commander';
 import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
+import EventBus, { OPENCHATTABEVENT } from '@/services/global-event-bus';
+import Timeline from '@/components/user/Timeline.vue';
+
 const currentUserNamespace: string = 'currentUserState';
 
 @Component({
   components: {
     PulseLoader,
+    twitter,
+    Timeline,
   },
 })
 export default class UserProfile extends Vue {
-  public errors: string[] = [];
+  public formErrors: string[] = [];
+  public years = [
+    {
+      color: 'cyan',
+      year: '1960',
+    },
+    {
+      color: 'green',
+      year: '1970',
+    },
+    {
+      color: 'pink',
+      year: '1980',
+    },
+    {
+      color: 'amber',
+      year: '1990',
+    },
+    {
+      color: 'orange',
+      year: '2000',
+    },
+  ];
 
   @Getter('getCurrentUser', { namespace: currentUserNamespace })
   public currentUser!: User;
@@ -121,11 +199,17 @@ export default class UserProfile extends Vue {
   public fetchUserDetails() {
     this.fetchData(+this.$route.params.id).catch((error: any) => {
       // tslint:disable-next-line:no-console
-      console.log('ghere');
-      this.errors.push(
+      this.formErrors.push(
         error.message || 'An error occured, please try again later.',
       );
     });
+  }
+
+  public sendMessage() {
+    RocketChatIframeCommander.Instance.openDirectMessageTo(
+      this.currentUser.rocketChatProfile.name,
+    );
+    EventBus.$emit(OPENCHATTABEVENT);
   }
 
   @Watch('$route')
@@ -136,4 +220,10 @@ export default class UserProfile extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.twitter-widget-container {
+  width: 25%;
+  display: inline-block;
+  height: 700px;
+  overflow: auto;
+}
 </style>

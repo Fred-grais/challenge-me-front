@@ -1,112 +1,149 @@
 <template>
-  <div class="profile">
-    <section class="cid-r3ansR389K mbr-fullscreen" id="header15-u">
-      <pulse-loader :loading="isFetching"></pulse-loader>
+  <v-container>
+    <v-layout row fill-height justify-center align-center>
+      <v-flex xs5>
+        <v-alert
+          :value="true"
+          type="success"
+          v-if="formSubmissionSuccessfull"
+          dismissible
+        >Profile Updated</v-alert>
+        <v-alert
+          :value="true"
+          type="error"
+          v-if="formErrors.length > 0"
+        >Some errors occurred while saving your informations:
+          <ul>
+            <li v-for="(error, i) in formErrors" :key="i">{{ error }}</li>
+          </ul>
+        </v-alert>
+        <v-card pa-5>
+          <v-container fluid grid-list-lg>
+            <v-layout row wrap>
+              <v-flex xs12 pa-5>
+                <v-avatar :size="256" color="grey lighten-4">
+                  <v-img
+                    :src="me.avatarUrl || 'https://api.adorable.io/avatars/285/abott@adorable.png'"
+                    alt="avatar"
+                  >
+                    <template v-slot:placeholder>
+                      <v-layout fill-height align-center justify-center ma-0>
+                        <v-progress-circular indeterminate color="cyan"></v-progress-circular>
+                      </v-layout>
+                    </template>
+                  </v-img>
+                </v-avatar>
+                <v-flex>
+                  <v-progress-linear
+                    v-model="currentAvatarUploadProgress"
+                    v-if="currentAvatarUploadProgress > 0"
+                  ></v-progress-linear>
+                  <input
+                    ref="avatarFileInput"
+                    type="file"
+                    id="avatar"
+                    name="avatar"
+                    accept="image/png, image/jpeg"
+                    @change="avatarChanged"
+                  >
 
-      <div class="container align-right" v-if="!isFetching">
-        <div class="errors">
-          <div class="error" v-for="error in errors" :key="error">{{ error }}</div>
-        </div>
+                  <v-snackbar
+                    v-model="avatarUploadComplete"
+                    color="success"
+                    :timeout="3000"
+                  >Avatar Uploaded!
+                    <v-btn dark flat @click="avatarUploadComplete = false">Close</v-btn>
+                  </v-snackbar>
+                </v-flex>
+                <v-divider></v-divider>
+                <v-form>
+                  <v-text-field v-model="me.email" label="Email" disabled></v-text-field>
+                  <v-text-field
+                    v-model="me.firstName"
+                    v-validate="validations.firstName"
+                    :error-messages="veeErrors.collect('firstName')"
+                    label="First Name"
+                    data-vv-name="firstName"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="me.lastName"
+                    v-validate="validations.lastName"
+                    :error-messages="veeErrors.collect('lastName')"
+                    label="Last Name"
+                    data-vv-name="lastName"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="me.position"
+                    v-validate="validations.position"
+                    :error-messages="veeErrors.collect('position')"
+                    label="Position"
+                    data-vv-name="position"
+                    required
+                  ></v-text-field>
 
-        <div class="row">
-          <div class="mbr-white col-lg-4 col-md-3 content-container"></div>
-          <div class="col-lg-4 col-md-5">
-            <div class="form-container">
-              <div class="media-container-column" data-form-type="formoid">
-                <form class="mbr-form">
-                  <div data-for="email">
-                    <div class="form-group">
-                      <input
-                        type="text"
-                        disabled="true"
-                        :value="me.email"
-                        class="form-control px-3"
-                        name="email"
-                        data-form-field="email"
-                        placeholder="Email"
-                        required
-                        id="email-header15-u"
-                      >
-                    </div>
-                  </div>
-                  <div data-for="firstName">
-                    <div class="form-group">
-                      <input
-                        type="text"
-                        v-model="me.firstName"
-                        class="form-control px-3"
-                        name="firstName"
-                        data-form-field="firstName"
-                        placeholder="First Name"
-                        required
-                        id="firstName-header15-u"
-                      >
-                    </div>
-                  </div>
-                  <div data-for="lastName">
-                    <div class="form-group">
-                      <input
-                        type="text"
-                        v-model="me.lastName"
-                        class="form-control px-3"
-                        name="lastName"
-                        data-form-field="lastName"
-                        placeholder="Last Name"
-                        required
-                        id="lastName-header15-u"
-                      >
-                    </div>
-                  </div>
-                  <div data-for="position">
-                    <div class="form-group">
-                      <input
-                        type="text"
-                        v-model="me.position"
-                        class="form-control px-3"
-                        name="position"
-                        data-form-field="position"
-                        placeholder="Position"
-                        id="position-header15-u"
-                      >
-                    </div>
-                  </div>
+                  <v-text-field
+                    v-model="me.twitterId"
+                    v-validate="validations.twitterId"
+                    :error-messages="veeErrors.collect('twitterId')"
+                    label="Twitter Id"
+                    data-vv-name="twitterId"
+                    required
+                  ></v-text-field>
 
-                  <span class="input-group-btn">
-                    <button
-                      type="button"
-                      id="save_btn"
-                      class="btn btn-secondary btn-form display-4"
-                      @click="save()"
-                    >Save</button>
-                    <!-- <button href="" type="submit" class="btn btn-secondary btn-form display-4">SEND FORM</button> -->
-                  </span>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+                  <v-btn @click="save" color="primary">Save</v-btn>
+                </v-form>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout row fill-height justify-center>
+      <v-flex xs5>
+        <timeline :timeline="me.timeline" ref="timeline" :editMode="true"></timeline>
+        <v-btn color="primary" @click="addItemToTimelineAction()">Add item</v-btn>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { State, Action, Getter } from 'vuex-class';
+import { State, Action, Getter, Mutation, namespace } from 'vuex-class';
 
 import { Me } from '@/store/me/types';
 import PulseLoader from '@/components/loaders/PulseLoaderWrapper.vue';
+import ItemEditor from '@/components/me/timeline/ItemEditor.vue';
+import Timeline from '@/components/user/Timeline.vue';
+
+import moment from 'moment';
+import uuid from 'uuid';
+
+import { ITimelineItem } from '@/store/common/types';
+
+import each from 'lodash/each';
 
 const meNamespace: string = 'meState';
+
+const MeMutation = namespace(meNamespace, Mutation);
 
 @Component({
   components: {
     PulseLoader,
+    Timeline,
   },
 })
 export default class Profile extends Vue {
-  public errors: string[] = [];
+  public formErrors: string[] = [];
+  public formSubmissionSuccessfull = false;
+  public currentAvatarUploadProgress = 0;
+  public avatarUploadComplete = false;
 
+  @MeMutation('addItemToTimeline') public addItemToTimeline!: (
+    item: ITimelineItem,
+  ) => void;
   @Getter('getMe', { namespace: meNamespace }) public me!: Me;
   @Getter('isFetching', { namespace: meNamespace }) public isFetching!: boolean;
 
@@ -114,19 +151,77 @@ export default class Profile extends Vue {
     me: Me,
   ) => Promise<any>;
 
-  private save() {
-    this.errors = [];
+  @Action('uploadMeAvatar', { namespace: meNamespace })
+  public uploadMeAvatar!: (params: {
+    file: File;
+    onUploadProgress: (progressEvent: any) => void;
+  }) => Promise<any>;
 
-    this.updateMe(this.me)
-      .then((response: any) => {
-        // tslint:disable-next-line:no-console
-        console.log(response);
-      })
-      .catch((error: any) => {
-        this.errors.push(error.message);
-        // tslint:disable-next-line:no-console
-        console.log(error.message);
-      });
+  public validations = {
+    firstName: {
+      required: true,
+      alpha: true,
+    },
+    lastName: {
+      required: true,
+      alpha: true,
+    },
+    position: {
+      required: true,
+      alpha: true,
+    },
+  };
+
+  get currentDate() {
+    return moment();
+  }
+
+  public addItemToTimelineAction() {
+    this.addItemToTimeline({
+      internalId: uuid.v4(),
+      title: 'New Title',
+      date: moment(),
+      description: 'New description',
+    });
+  }
+
+  private avatarChanged(event: any) {
+    const input: any = this.$refs.avatarFileInput;
+
+    this.uploadMeAvatar({
+      file: input.files[0],
+      onUploadProgress: this.onAvatarUploadProgress,
+    }).then((response) => {
+      this.currentAvatarUploadProgress = 0;
+      this.avatarUploadComplete = true;
+    });
+
+    (this.$refs.avatarFileInput as any).value = null;
+  }
+
+  private onAvatarUploadProgress(progressEvent: any) {
+    this.currentAvatarUploadProgress =
+      (progressEvent.loaded / progressEvent.total) * 100;
+  }
+
+  private save() {
+    this.$validator.validateAll();
+    this.formSubmissionSuccessfull = false;
+    if (this.veeErrors.all().length === 0) {
+      this.updateMe(this.me)
+        .then((response: any) => {
+          // tslint:disable-next-line:no-console
+          console.log(response);
+          if (response.status === 200) {
+            this.formSubmissionSuccessfull = true;
+          }
+        })
+        .catch((error: any) => {
+          this.formErrors.push(error.message);
+          // tslint:disable-next-line:no-console
+          console.log(error.message);
+        });
+    }
   }
 }
 </script>

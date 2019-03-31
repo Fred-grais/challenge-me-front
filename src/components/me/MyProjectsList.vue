@@ -1,5 +1,5 @@
 <template>
-  <div class="my-projects">
+  <!-- <div class="my-projects">
     <section class="mbr-section content5 cid-r3amUe0ElS mbr-parallax-background" id="content5-t">
       <div class="container">
         <div class="media-container-row">
@@ -27,7 +27,24 @@
         </div>
       </div>
     </section>
-  </div>
+  </div>-->
+  <v-container fluid grid-list-md pa-0>
+    <v-layout row wrap justify-center>
+      <v-flex xs5>
+        <Form/>
+      </v-flex>
+    </v-layout>
+
+    <v-layout row wrap justify-center>
+      <v-flex
+        v-for="projectPreview in projectsPreviews"
+        :key="projectPreview.id"
+        v-bind="{ ['xs4']: true }"
+      >
+        <PreviewCard :projectPreview="projectPreview"/>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -52,7 +69,7 @@ const meProjectsNamespace: string = 'meProjectsState';
   },
 })
 export default class MyProjectsList extends Vue {
-  @Getter('getChunkedProjects', { namespace: meProjectsNamespace })
+  @Getter('getProjects', { namespace: meProjectsNamespace })
   public projectsPreviews!: ProjectPreview[][];
   @Getter('isFetching', { namespace: meProjectsNamespace })
   public isFetching!: boolean;

@@ -1,7 +1,7 @@
 <template>
-  <div class="register">
+  <v-container pa-5>
     <Form/>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">
